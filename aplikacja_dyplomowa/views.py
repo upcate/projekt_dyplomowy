@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import User
+from .models import Users
 
 # Create your views here.
 
@@ -8,7 +8,7 @@ from .models import User
 def index(request):
 
     context = {
-        'users': User.objects.all
+        'users': Users.objects.all
     }
 
     # return HttpResponse('Hello World!')

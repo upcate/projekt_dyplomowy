@@ -1,3 +1,9 @@
-{% for user in users %}
-    {{ user }} <br>
-{% endfor %}
+{% if users|length == 0  %}
+    nie ma żadnych użytkowników :(
+{% else %}
+
+    {% for user in users %}
+        {{ user }} <br>
+    {% endfor %}
+
+{% endif %}
