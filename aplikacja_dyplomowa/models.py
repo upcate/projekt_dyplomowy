@@ -1,29 +1,13 @@
 from django.db import models
-from django.contrib.auth.hashers import make_password
-import uuid
+from django.contrib.auth.models import User
 
 
 # Create your models here.
 
 
-class Users(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
-    username = models.CharField(max_length=16)
-    user_password = models.CharField(max_length=128)
-    user_email = models.EmailField()
-    createdAt = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'Użytkownik {self.username} o id {self.id}, haśle {self.user_password} oraz mailu {self.user_email}. Konto zostało założone: {self.createdAt}'
-
-    def save(self, *args, **kwargs):
-        self.user_password = make_password(self.user_password)
-        super().save(*args, **kwargs)
-
-
 class Projects(models.Model):
     project_name = models.CharField(max_length=16)
-    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
 

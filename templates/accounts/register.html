@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+    <html lang="pl">
+        <body>
+            <form method="POST" action="">
+                {% csrf_token %}
+                {{ form.username.label }}
+                {{ form.username }} <br>
+
+                {{ form.email.label }}
+                {{ form.email }} <br>
+
+                {{ form.password1.label }}
+                {{ form.password1 }} <br>
+
+                {{ form.password2.label }}
+                {{ form.password2 }} <br>
+                <input type="submit" value="Zarejestruj się">
+            </form>
+            Masz już konto? <a href="{% url 'login' %}"> Zaloguj się! </a>
+        </body>
+    </html>

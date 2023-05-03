@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+    <html lang="pl">
+
+        <form method="POST" action="">
+            {% csrf_token %}
+            <label for="username"> Nazwa użytkownika
+                <input type="text" name="username"> <br>
+            </label>
+
+            <label for="password"> Hasło
+                <input type="password" name="password"> <br>
+            </label>
+
+            <input type="submit" value="Zaloguj się">
+        </form>
+
+
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %} <br>
+
+        Nie masz konta? <a href="{% url 'register' %}"> Zaresjestruj się! </a>
+
+</html>
