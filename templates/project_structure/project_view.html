@@ -1,0 +1,7 @@
+Project {{ project }} <br>
+<a href="{% url 'project_list' %}"> Lista projektów </a> <br>
+<a href="{% url 'update_project' project_pk=project.id %}"> Edytuj </a> <a href="{% url 'delete_project' project_pk=project.id %}"> Usuń </a> <br>
+<a> Fabuła </a> <br>
+<a> Pliki </a> <br>
+<a> Obiekty </a> <br>
+<a href="{% url 'tag_list' project_pk=project.id %}"> Tagi </a>

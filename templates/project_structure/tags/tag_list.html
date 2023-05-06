@@ -1,0 +1,12 @@
+Tagi do projektu {{ project }} <br>
+
+{% if tags|length == 0 %}
+    Ten projekt nie ma jeszcze żadnych tagów. <br>
+    <a href="{% url 'tag_create' project_pk=project.id %}"> Stwórz pierwszy tag </a> <br>
+    <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a>
+{% else %}
+    {% for tag in tags %}
+        {{ tag }} <br>
+    {% endfor %}
+    <a href="{% url 'tag_create' project_pk=project.id %}"> Stwórz tag </a> <br>
+{% endif %}

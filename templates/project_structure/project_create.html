@@ -1,0 +1,16 @@
+<form method="POST" action="">
+    {% csrf_token %}
+    {{ form.project_name.label }}
+    {{ form.project_name }} <br>
+    <input type="submit" value="Stwóz projekt">
+    {% if form.non_field_errors %}
+        <br><br> Błędy:
+        <ul>
+            {% for error in form.non_field_errors %}
+                <li> {{ error }} </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</form>
+
+<a href="{% url 'project_list' %}"> Powrót </a>

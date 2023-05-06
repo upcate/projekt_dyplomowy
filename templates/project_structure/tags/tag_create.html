@@ -1,0 +1,21 @@
+<form method="POST" action="">
+    {% csrf_token %}
+    {{ form.tag_name.label }}
+    {{ form.tag_name }} <br>
+    <input type="submit" value="Stwórz tag">
+    {% if form.non_field_errors %}
+        <br><br> Błędy:
+        <ul>
+            {% for error in form.non_field_errors %}
+                <li> {{ error }} </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</form>
+<br>
+<a href="{% url 'tag_list' project_pk=project.id %}"> Powrót </a> <br><br>
+
+{{ tag_help }} <br>
+{{ tag_help.user }} <br>
+{{ tag_help.project }}
+{{ tag_help.slug }}

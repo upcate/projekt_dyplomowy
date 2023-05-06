@@ -15,6 +15,18 @@
                 {{ form.password2.label }}
                 {{ form.password2 }} <br>
                 <input type="submit" value="Zarejestruj się">
+                {% if form.errors %}
+                    <br><br> Błędy:
+                    {% for field in form %}
+                        {% if field.errors %}
+                            <ul>
+                                {% for error in field.errors %}
+                                    <li>{{ field.label }}: {{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
             </form>
             Masz już konto? <a href="{% url 'login' %}"> Zaloguj się! </a>
         </body>
