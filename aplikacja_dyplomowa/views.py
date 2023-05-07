@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-# from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import CreateUserForm, ProjectForm, TagForm
@@ -289,3 +288,20 @@ def tag_delete(request, project_pk, tag_pk):
         'form': form,
     }
     return render(request, 'project_structure/tags/tag_delete.html', context)
+
+
+@login_required(login_url='login')
+def object_list(request, project_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    context = {
+        'project': project,
+        'objects': ProjectObjects.objects.filter(project=project)
+    }
+    return render(request, 'project_structure/object/object_list.html', context)
