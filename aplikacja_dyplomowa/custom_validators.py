@@ -94,7 +94,7 @@ class CustomUserAttributeSimilarityValidator(UserAttributeSimilarityValidator):
                     except FieldDoesNotExist:
                         verbose_name = attribute_name
                     raise ValidationError(
-                        _("Hasło zbyt podobne do danych danych użytkownika."),
+                        _("Hasło zbyt podobne do innych danych użytkownika."),
                         code="password_too_similar",
                         params={"verbose_name": verbose_name},
                     )

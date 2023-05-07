@@ -6,7 +6,6 @@ from .forms import CreateUserForm, ProjectForm, TagForm
 from django.contrib import messages
 from .models import Projects, ProjectObjects, Tags, Files
 from django.db import IntegrityError
-from django.utils.text import slugify
 
 # Create your views here.
 
@@ -200,11 +199,10 @@ def tag_create(request, project_pk):
 
     try:
         project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
     except Projects.DoesNotExist:
         return redirect('project_list')
-
-    if project.user != request.user:
-        return redirect('access_denied')
 
     form = TagForm()
     if request.method == 'POST':
@@ -226,3 +224,68 @@ def tag_create(request, project_pk):
         'project': project,
     }
     return render(request, 'project_structure/tags/tag_create.html', context)
+
+
+@login_required(login_url='login')
+def tag_update(request, project_pk, tag_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        tag = Tags.objects.get(id=tag_pk, project=project)
+        if tag.user != request.user:
+            return redirect('access_denied')
+    except Tags.DoesNotExist:
+        return redirect('tag_list', project_pk=project_pk)
+
+    form = TagForm()
+    if request.method == 'POST':
+        form = TagForm(request.POST, instance=tag)
+        if form.is_valid():
+            try:
+                form.save()
+                return redirect('tag_list', project_pk=project.id)
+            except IntegrityError:
+                form.add_error(None, 'Tag o takiej nazwie już istnieje')
+
+    context = {
+        'project': project,
+        'tag': tag,
+        'form': form,
+    }
+    return render(request, 'project_structure/tags/tag_update.html', context)
+
+
+@login_required(login_url='login')
+def tag_delete(request, project_pk, tag_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        tag = Tags.objects.get(id=tag_pk)
+        if tag.user != request.user:
+            return redirect('access_denied')
+    except Tags.DoesNotExist:
+        return redirect('tag_list', project_pk=project.id)
+
+    form = TagForm(instance=tag)
+    if request.method == 'POST':
+        tag.delete()
+        return redirect('tag_list', project_pk=project.id)
+
+    context = {
+        'project': project,
+        'tag': tag,
+        'form': form,
+    }
+    return render(request, 'project_structure/tags/tag_delete.html', context)

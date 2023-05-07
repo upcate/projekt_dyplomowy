@@ -14,5 +14,7 @@ urlpatterns = [
     path('project/<str:project_pk>/delete', views.delete_project, name='delete_project'),
     path('project/<str:project_pk>/', views.view_project, name='view_project'),
     path('project/<str:project_pk>/tags', views.tag_list, name='tag_list'),
-    path('project/<str:project_pk>/tag/create', views.tag_create, name='tag_create')
+    path('project/<str:project_pk>/tag/create', views.tag_create, name='tag_create'),
+    path('project/<str:project_pk>/tag/<str:tag_pk>/update', views.tag_update, name='tag_update'),
+    path('project/<str:project_pk>/tag/<str:tag_pk>/delete', views.tag_delete, name='tag_delete')
 ]

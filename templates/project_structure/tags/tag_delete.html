@@ -1,0 +1,7 @@
+<form method="POST" action="">
+    {% csrf_token %}
+    Czy usuńąć tag {{ tag.tag_name }}? <br>
+    <input type="submit" value="Usuń">
+    <a href="{% url 'tag_list' project_pk=project.id %}"> Anuluj </a>
+
+</form>
