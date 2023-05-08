@@ -51,6 +51,9 @@ class ProjectObjects(models.Model):
     class Meta:
         unique_together = ['object_name', 'project', 'user']
 
+    def __str__(self):
+        return f'{self.object_name}'
+
 
 class Files(models.Model):
     file_name = models.CharField(max_length=16)

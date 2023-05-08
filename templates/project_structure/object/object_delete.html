@@ -1,0 +1,7 @@
+<form method="POST" action="">
+    {% csrf_token %}
+    Czy usuńąć obiekt {{ object.object_name }}? <br>
+    <input type="submit" value="Usuń">
+    <a href="{% url 'object_list' project_pk=project.id %}"> Anuluj </a>
+
+</form>

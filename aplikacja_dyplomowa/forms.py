@@ -3,7 +3,8 @@ from django.forms import ModelForm, CharField
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, ValidationError
 from django.contrib.auth import password_validation
-from .models import Projects, Tags
+from .models import Projects, Tags, ProjectObjects
+# from django_select2 import forms as s2forms
 
 
 class CreateUserForm(UserCreationForm):
@@ -28,11 +29,6 @@ class CreateUserForm(UserCreationForm):
             'username': 'Nazwa użytkownika',
             'email': 'Email',
         }
-
-    error_messages = {
-        'password_mismatch': 'Hasła nie są identyczne.',
-        'password_too_similar': 'Hasło jest zbyt podobne do nazwy użytkownika lub adresu email',
-    }
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -65,3 +61,25 @@ class TagForm(ModelForm):
         labels = {
             'tag_name': 'Nazwa tagu'
         }
+
+
+class ProjectObjectForm(ModelForm):
+
+    # tags = forms.ModelMultipleChoiceField(queryset=Tags.objects.none())  # widget=forms.CheckboxSelectMultiple
+
+    class Meta:
+        model = ProjectObjects
+        fields = ['object_name', 'object_description']
+        labels = {
+            'object_name': 'Nazwa obiektu',
+            'object_description': 'Opis obiektu',
+            'tags': 'Tagi'
+        }
+        widgets = {
+            'object_description': forms.Textarea(attrs={'rows': 3, 'cols': 20}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['object_description'].required = False
+        # self.fields['tags'].queryset = Tags.objects.filter(project=project)

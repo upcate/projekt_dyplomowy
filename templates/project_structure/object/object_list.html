@@ -2,14 +2,14 @@ Obiekty projektu {{ project }} <br>
 
 {% if objects|length == 0 %}
     Ten projekt nie ma jeszcze żadnych obiektów. <br>
-    <a> Stwórz swój pierwszy obiekt </a> <br>
+    <a href="{% url 'object_create' project_pk=project.id %}"> Stwórz swój pierwszy obiekt </a> <br>
     <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a> <br>
 {% else %}
     {% for object in objects %}
         {{ object }}
         <a> Edytuj </a>
-        <a> Usuń </a> <br>
+        <a href="{% url 'object_delete' project_pk=project.id object_pk=object.id %}"> Usuń </a> <br>
     {% endfor %}
-    <a> Stwórz obiekt </a> <br>
+    <a href="{% url 'object_create' project_pk=project.id %}"> Stwórz obiekt </a> <br>
     <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a>
 {% endif %}

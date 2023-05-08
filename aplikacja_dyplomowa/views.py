@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import CreateUserForm, ProjectForm, TagForm
+from .forms import CreateUserForm, ProjectForm, TagForm, ProjectObjectForm
 from django.contrib import messages
 from .models import Projects, ProjectObjects, Tags, Files
 from django.db import IntegrityError
@@ -305,3 +305,69 @@ def object_list(request, project_pk):
         'objects': ProjectObjects.objects.filter(project=project)
     }
     return render(request, 'project_structure/object/object_list.html', context)
+
+
+@login_required(login_url='login')
+def object_create(request, project_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    form = ProjectObjectForm()  # project=project
+    if request.method == 'POST':
+        form = ProjectObjectForm(request.POST)  # project=project
+        user = request.user
+        if form.is_valid():
+            try:
+                object_to_save = form.save(commit=False)
+                object_to_save.user = user
+                object_to_save.project = project
+                object_to_save.save()
+                return redirect('object_list', project_pk=project.id)
+            except IntegrityError:
+                form.add_error(None, 'Obiekt o takiej nazwie już istnieje.')
+
+    context = {
+        'form': form,
+        'project': project
+    }
+    return render(request, 'project_structure/object/object_create.html', context)
+
+
+@login_required(login_url='login')
+def object_update(request, project_pk, object_pk):
+    pass
+
+
+@login_required(login_url='login')
+def object_delete(request, project_pk, object_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        object_to_delete = ProjectObjects.objects.get(id=object_pk)
+        if object_to_delete.user != request.user:
+            return redirect('access_denied')
+    except ProjectObjects.DoesNotExist:
+        return redirect('object_list', project_pk=project.id)
+
+    form = ProjectObjectForm()
+    if request.method == 'POST':
+        object_to_delete.delete()
+        return redirect('object_list', project_pk=project.id)
+
+    context = {
+        'form': form,
+        'object': object_to_delete,
+        'project': project
+    }
+    return render(request, 'project_structure/object/object_delete.html', context)
