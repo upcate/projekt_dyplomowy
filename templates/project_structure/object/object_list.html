@@ -6,8 +6,7 @@ Obiekty projektu {{ project }} <br>
     <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a> <br>
 {% else %}
     {% for object in objects %}
-        {{ object }}
-        <a> Edytuj </a>
+        <a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}"> {{ object }} </a>
         <a href="{% url 'object_delete' project_pk=project.id object_pk=object.id %}"> Usuń </a> <br>
     {% endfor %}
     <a href="{% url 'object_create' project_pk=project.id %}"> Stwórz obiekt </a> <br>

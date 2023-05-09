@@ -1,10 +1,16 @@
 from django.shortcuts import render, redirect
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import CreateUserForm, ProjectForm, TagForm, ProjectObjectForm
 from django.contrib import messages
+
+from .forms import CreateUserForm, ProjectForm, TagForm, ProjectObjectForm
+
 from .models import Projects, ProjectObjects, Tags, Files
+
 from django.db import IntegrityError
+
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -327,7 +333,7 @@ def object_create(request, project_pk):
                 object_to_save.user = user
                 object_to_save.project = project
                 object_to_save.save()
-                return redirect('object_list', project_pk=project.id)
+                return redirect('object_view', project_pk=project.id, object_pk=object_to_save.id)
             except IntegrityError:
                 form.add_error(None, 'Obiekt o takiej nazwie już istnieje.')
 
@@ -371,3 +377,65 @@ def object_delete(request, project_pk, object_pk):
         'project': project
     }
     return render(request, 'project_structure/object/object_delete.html', context)
+
+
+@login_required(login_url='login')
+def object_view(request, project_pk, object_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        object_to_view = ProjectObjects.objects.get(id=object_pk)
+        if object_to_view.user != request.user:
+            return redirect('access_denied')
+    except ProjectObjects.DoesNotExist:
+        return redirect('object_list', project_pk=project.id)
+
+    tags = object_to_view.tags.all()
+    connections = object_to_view.connections.all()
+
+    context = {
+        'object': object_to_view,
+        'project': project,
+        'tags': tags,
+        'connections': connections
+    }
+    return render(request, 'project_structure/object/object_view.html', context)
+
+
+@login_required(login_url='login')
+def object_tags(request, project_pk, object_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        object_to_view = ProjectObjects.objects.get(id=object_pk)
+        if object_to_view.user != request.user:
+            return redirect('access_denied')
+    except ProjectObjects.DoesNotExist:
+        return redirect('object_list', project_pk=project.id)
+
+    tags = object_to_view.tags.all()
+
+    paginator = Paginator(tags, 5)
+    page_number = request.GET.get('page')
+    page_tag = paginator.get_page(page_number)
+
+    context = {
+        'project': project,
+        'object': object_to_view,
+        'tags': tags,
+        'page_tag': page_tag,
+        'column_headers': ['Tag', 'Usuń'],
+    }
+    return render(request, 'project_structure/object/object_tags.html', context)

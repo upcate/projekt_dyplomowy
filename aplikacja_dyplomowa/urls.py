@@ -20,5 +20,7 @@ urlpatterns = [
     path('project/<str:project_pk>/objects', views.object_list, name='object_list'),
     path('project/<str:project_pk>/object/create', views.object_create, name='object_create'),
     # object update
-    path('project/<str:project_pk>/object/<str:object_pk>/delete', views.object_delete, name='object_delete')
+    path('project/<str:project_pk>/object/<str:object_pk>/delete', views.object_delete, name='object_delete'),
+    path('project/<str:project_pk>/object/<str:object_pk>', views.object_view, name='object_view'),
+    path('project/<str:project_pk>/object/<str:object_pk>/tags', views.object_tags, name='object_tags'),
 ]

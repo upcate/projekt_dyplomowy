@@ -65,8 +65,6 @@ class TagForm(ModelForm):
 
 class ProjectObjectForm(ModelForm):
 
-    # tags = forms.ModelMultipleChoiceField(queryset=Tags.objects.none())  # widget=forms.CheckboxSelectMultiple
-
     class Meta:
         model = ProjectObjects
         fields = ['object_name', 'object_description']
@@ -82,4 +80,3 @@ class ProjectObjectForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['object_description'].required = False
-        # self.fields['tags'].queryset = Tags.objects.filter(project=project)

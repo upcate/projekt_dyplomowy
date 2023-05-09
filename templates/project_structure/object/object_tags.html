@@ -1,0 +1,44 @@
+Tagi obiektu {{ object.object_name }} <br>
+<a> Dodaj tag </a> <br>
+<a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}"> Powrót </a> <br> <br>
+
+{{ page_tag.number }} <br>
+{{ page_tag.paginator.num_pages }} <br>
+{{ page_tag.object_list }} <br>
+{{ page_tag.object_list|length }} <br>
+
+{% if page_tag.object_list|length == 0 %}
+
+    Ten obiekt nie ma żadnych tagów. Dodaj pierwszy tag do obiektu. <br>
+
+{% else %}
+
+    <table>
+        <tr>
+            {% for header in column_headers %}
+                <th> {{ header }} </th>
+            {% endfor %}
+        <tr>
+            {% for tag in page_tag %}
+                <tr>
+                    <td> {{ tag }} </td>
+                    <td> <a> Usuń </a> </td>
+                </tr> <br>
+            {% endfor %}
+    </table>
+
+    {% if page_tag.has_other_pages %}
+        {% if page_tag.has_previous %}
+            <a href="?page=1"> &lsaquo; Początek </a>
+            <a href="?page={{ page_tag.previous_page_number }}"> &lsaquo; Poprzednia </a>
+        {% endif %}
+
+        Strona {{ page_tag.number }} z {{ page_tag.paginator.num_pages }}
+
+        {% if page_tag.has_next %}
+            <a href="?page={{ page_tag.next_page_number }}"> &rsaquo; Następna </a>
+            <a href="?page={{ page_tag.paginator.num_pages }}"> &rsaquo; Ostatnia </a>
+        {% endif %}
+    {% endif %}
+
+{% endif %}
