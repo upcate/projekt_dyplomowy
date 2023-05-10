@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import ModelForm, CharField
+from django.forms import ModelForm, CharField, Form
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, ValidationError
 from django.contrib.auth import password_validation
@@ -80,3 +80,20 @@ class ProjectObjectForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['object_description'].required = False
+
+
+class ProjectObjectAddTagForm(Form):
+
+    def __init__(self, *args, project=None, object_to_view=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['tags'].queryset = Tags.objects.filter(project=project)
+        self.fields['tags'].initial = object_to_view.tags.all()
+
+    tags = forms.ModelMultipleChoiceField(queryset=Tags.objects.none(), widget=forms.CheckboxSelectMultiple)
+
+# class Meta:
+    #     model = ProjectObjects
+    #     fields = ['tags']
+    #     labels = {
+    #         'tags': 'Tagi',
+    #     }

@@ -1,11 +1,6 @@
 Tagi obiektu {{ object.object_name }} <br>
-<a> Dodaj tag </a> <br>
+<a href="{% url 'object_tag_add' project_pk=project.id object_pk=object.id %}"> Dodaj tag </a> <br>
 <a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}"> Powrót </a> <br> <br>
-
-{{ page_tag.number }} <br>
-{{ page_tag.paginator.num_pages }} <br>
-{{ page_tag.object_list }} <br>
-{{ page_tag.object_list|length }} <br>
 
 {% if page_tag.object_list|length == 0 %}
 

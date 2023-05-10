@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .forms import CreateUserForm, ProjectForm, TagForm, ProjectObjectForm
+from .forms import CreateUserForm, ProjectForm, TagForm, ProjectObjectForm, ProjectObjectAddTagForm
 
 from .models import Projects, ProjectObjects, Tags, Files
 
@@ -323,9 +323,9 @@ def object_create(request, project_pk):
     except Projects.DoesNotExist:
         return redirect('project_list')
 
-    form = ProjectObjectForm()  # project=project
+    form = ProjectObjectForm()
     if request.method == 'POST':
-        form = ProjectObjectForm(request.POST)  # project=project
+        form = ProjectObjectForm(request.POST)
         user = request.user
         if form.is_valid():
             try:
@@ -439,3 +439,97 @@ def object_tags(request, project_pk, object_pk):
         'column_headers': ['Tag', 'Usuń'],
     }
     return render(request, 'project_structure/object/object_tags.html', context)
+
+
+@login_required(login_url='login')
+def object_connections(request, project_pk, object_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        object_to_view = ProjectObjects.objects.get(id=object_pk)
+        if object_to_view.user != request.user:
+            return redirect('access_denied')
+    except ProjectObjects.DoesNotExist:
+        return redirect('object_list', project_pk=project.id)
+
+    connections = object_to_view.connections.all()
+
+    paginator = Paginator(connections, 5)
+    page_number = request.GET.get('page')
+    page_connection = paginator.get_page(page_number)
+
+    context = {
+        'project': project,
+        'object': object_to_view,
+        'connections': connections,
+        'page_connection': page_connection,
+        'column_headers': ['Połączenie', 'Usuń']
+    }
+    return render(request, 'project_structure/object/object_connections.html', context)
+
+
+@login_required(login_url='login')
+def object_tag_add(request, project_pk, object_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        object_to_view = ProjectObjects.objects.get(id=object_pk)
+        if object_to_view.user != request.user:
+            return redirect('access_denied')
+    except ProjectObjects.DoesNotExist:
+        return redirect('object_list', project_pk=project.id)
+
+    form = ProjectObjectAddTagForm(project=project, object_to_view=object_to_view)
+    tags = Tags.objects.filter(project=project)
+
+    if request.method == 'POST':
+        form = ProjectObjectAddTagForm(request.POST, project=project, object_to_view=object_to_view)
+        if form.is_valid():
+            tags_from_form = form.cleaned_data['tags']
+            current_tags = set(object_to_view.tags.all())
+
+            tags_to_add = set(tags_from_form) - current_tags
+            tags_to_remove = current_tags - set(tags_from_form)
+
+            for tag in tags_to_add:
+                object_to_view.tags.add(tag)
+
+            for tag in tags_to_remove:
+                object_to_view.tags.remove(tag)
+
+            return redirect('object_view', project_pk=project.id, object_pk=object_to_view.id)
+
+    context = {
+        'form': form,
+        'project': project,
+        'object': object_to_view,
+        'tags': tags,
+    }
+    return render(request, 'project_structure/object/object_tag_add.html', context)
+
+
+@login_required(login_url='login')
+def object_tag_delete(request, project_pk, object_pk):
+    pass
+
+
+@login_required(login_url='login')
+def object_connection_add(request, project_pk, object_pk):
+    pass
+
+
+@login_required(login_url='login')
+def object_connection_delete(request, project_pk, object_pk):
+    pass

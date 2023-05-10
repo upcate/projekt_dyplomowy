@@ -1,0 +1,11 @@
+<a href="{% url 'object_tags' project_pk=project.id object_pk=object.id %}"> Powrót </a>
+{% if tags|length == 0 %}
+    Ten obiekt nie ma żadnych tagów. <a href="{% url 'tag_list' project_pk=project.id %}"> Przejdź do tagów </a> <br>
+{% else %}
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ form.tags.label }}
+        {{ form.tags }} <br>
+        <input type="submit" value="Dodaj">
+    </form>
+{% endif %}

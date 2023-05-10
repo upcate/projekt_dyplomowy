@@ -1,0 +1,39 @@
+Połączenia obiektu {{ object.object_name }} <br>
+<a> Dodaj połączenie </a> <br>
+<a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}"> Powrót </a> <br> <br>
+
+{% if page_connection.object_list|length == 0 %}
+
+    Ten obiekt nie ma żadnych połączeń. Dodaj pierwsze połączenie. <br>
+
+{% else %}
+
+    <table>
+    <tr>
+        {% for header in column_headers %}
+            <th> {{ header }} </th>
+        {% endfor %}
+    </tr>
+    {% for connection in page_connection  %}
+        <tr>
+            <td> {{ connection }} </td>
+            <td> <a> Usuń </a> </td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    {% if page_connection.has_other_pages %}
+        {% if page_connection.has_previous %}
+            <a href="?page=1"> &lsaquo; Początek </a>
+            <a href="?page={{ page_connection.previous_page_number }}"> &lsaquo; Poprzednia </a>
+        {% endif %}
+
+        Strona {{ page_connection.number }} z {{ page_connection.paginator.num_pages }}
+
+        {% if page_connection.has_next %}
+            <a href="?page={{ page_connection.next_page_number }}"> &rsaquo; Następna </a>
+            <a href="?page={{ page_connection.paginator.num_pages }}"> &rsaquo; Ostatnia </a>
+        {% endif %}
+    {% endif %}
+
+{% endif %}
