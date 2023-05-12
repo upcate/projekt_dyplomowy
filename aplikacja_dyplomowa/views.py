@@ -409,39 +409,6 @@ def object_view(request, project_pk, object_pk):
 
 
 @login_required(login_url='login')
-def object_tags(request, project_pk, object_pk):
-
-    try:
-        project = Projects.objects.get(id=project_pk)
-        if project.user != request.user:
-            return redirect('access_denied')
-    except Projects.DoesNotExist:
-        return redirect('project_list')
-
-    try:
-        object_to_view = ProjectObjects.objects.get(id=object_pk)
-        if object_to_view.user != request.user:
-            return redirect('access_denied')
-    except ProjectObjects.DoesNotExist:
-        return redirect('object_list', project_pk=project.id)
-
-    tags = object_to_view.tags.all()
-
-    paginator = Paginator(tags, 5)
-    page_number = request.GET.get('page')
-    page_tag = paginator.get_page(page_number)
-
-    context = {
-        'project': project,
-        'object': object_to_view,
-        'tags': tags,
-        'page_tag': page_tag,
-        'column_headers': ['Tag', 'Usuń'],
-    }
-    return render(request, 'project_structure/object/object_tags.html', context)
-
-
-@login_required(login_url='login')
 def object_connections(request, project_pk, object_pk):
 
     try:
@@ -475,7 +442,7 @@ def object_connections(request, project_pk, object_pk):
 
 
 @login_required(login_url='login')
-def object_tag_add(request, project_pk, object_pk):
+def object_tag_edit(request, project_pk, object_pk):
 
     try:
         project = Projects.objects.get(id=project_pk)
@@ -517,12 +484,7 @@ def object_tag_add(request, project_pk, object_pk):
         'object': object_to_view,
         'tags': tags,
     }
-    return render(request, 'project_structure/object/object_tag_add.html', context)
-
-
-@login_required(login_url='login')
-def object_tag_delete(request, project_pk, object_pk):
-    pass
+    return render(request, 'project_structure/object/object_tag_edit.html', context)
 
 
 @login_required(login_url='login')

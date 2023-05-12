@@ -89,7 +89,7 @@ class ProjectObjectAddTagForm(Form):
         self.fields['tags'].queryset = Tags.objects.filter(project=project)
         self.fields['tags'].initial = object_to_view.tags.all()
 
-    tags = forms.ModelMultipleChoiceField(queryset=Tags.objects.none(), widget=forms.CheckboxSelectMultiple)
+    tags = forms.ModelMultipleChoiceField(queryset=Tags.objects.none(), widget=forms.CheckboxSelectMultiple, required=False)
 
 # class Meta:
     #     model = ProjectObjects

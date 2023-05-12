@@ -2,7 +2,7 @@
 Opis: {{ object.object_description }} <br>
 <a href="{% url 'object_delete' project_pk=project.id object_pk=object.id %}"> Usuń obiekt. </a> <br>
 Połączenia: {% if connections|length == 0 %}
-    Obiekt nie ma połączeń. <a href="{% url 'object_connections' project_pk=project.id object_pk=object.id %}"> Edytuj połączenia. </a> <br>
+    Obiekt nie ma połączeń. <a href="{% url 'object_connections' project_pk=project.id object_pk=object.id %}"> Dodaj połączenia. </a> <br>
 {% else %}
     {% for connection in connections %}
         <a href="{% url 'object_view' project_pk=project.id object_pk=connection.id %}"> {{ connection }} </a>
@@ -10,12 +10,12 @@ Połączenia: {% if connections|length == 0 %}
     | <a href="{% url 'object_connections' project_pk=project.id object_pk=object.id %}"> Edytuj połączenia. </a> <br>
 {% endif %}
 Tagi: {% if tags|length == 0 %}
-    Obiekt nie ma tagów. <a href="{% url 'object_tags' project_pk=project.id object_pk=object.id %}"> Edytuj tagi. </a> <br>
+    Obiekt nie ma tagów. <a href="{% url 'object_tags_edit' project_pk=project.id object_pk=object.id %}"> Dodaj tagi. </a> <br>
 {% else %}
     {% for tag in tags %}
         {{ tag }}
     {% endfor %}
-    | <a href="{% url 'object_tags' project_pk=project.id object_pk=object.id %}"> Edytuj tagi. </a> <br>
+    | <a href="{% url 'object_tags_edit' project_pk=project.id object_pk=object.id %}"> Edytuj tagi. </a> <br>
 {% endif %}
 
 <a href="{% url 'object_list' project_pk=project.id %}"> Powrót </a>

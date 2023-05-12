@@ -1,5 +1,5 @@
 Tagi obiektu {{ object.object_name }} <br>
-<a href="{% url 'object_tag_add' project_pk=project.id object_pk=object.id %}"> Dodaj tag </a> <br>
+<a href="{% url 'object_tags_edit' project_pk=project.id object_pk=object.id %}"> Dodaj tag </a> <br>
 <a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}"> Powrót </a> <br> <br>
 
 {% if page_tag.object_list|length == 0 %}
