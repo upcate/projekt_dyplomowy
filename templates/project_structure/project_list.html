@@ -9,7 +9,6 @@
             <a href="{% url 'create_project' %}"> Stwórz projekt </a> <br>
             {% for project in projects %}
                 <a href="{% url 'view_project' project_pk=project.id %}"> {{ project }} </a>
-                <a href="{% url 'update_project' project_pk=project.id %}"> Edytuj </a>
                 <a href="{% url 'delete_project' project_pk=project.id %}"> Usuń </a> <br>
             {% endfor %}
         {% endif %}

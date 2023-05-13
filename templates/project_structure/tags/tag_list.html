@@ -6,7 +6,7 @@ Tagi do projektu {{ project }} <br>
     <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a>
 {% else %}
     {% for tag in tags %}
-        {{ tag }}
+        <a href="{% url 'objects_by_tag' project_pk=project.id tag_pk=tag.id %}"> {{ tag }} </a>
         <a href="{% url 'tag_update' project_pk=project.id tag_pk=tag.id %}"> Edytuj </a>
         <a href="{% url 'tag_delete' project_pk=project.id tag_pk=tag.id %}"> Usuń </a> <br>
     {% endfor %}

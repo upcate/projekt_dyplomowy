@@ -19,6 +19,8 @@ from .models import Projects, ProjectObjects, Tags, Files
 
 from django.db import IntegrityError
 
+from django.core.paginator import Paginator
+
 # Create your views here.
 
 
@@ -182,9 +184,7 @@ def update_project(request, project_pk):
         if form.is_valid():
             try:
                 form.save()
-                # Na razie redirectuje do listy, fajnie by było, gdyby w zależności od tego, czy edytowałeś z listy
-                # projektów, czy z widoku projektu, żeby tam cię przerzucał
-                return redirect('project_list')
+                return redirect('view_project', project_pk=project.id)
             except IntegrityError:
                 form.add_error(None, 'Projekt o tej nazwie już istnieje.')
 
@@ -582,3 +582,35 @@ def object_connections_edit(request, project_pk, object_pk):
         'objects': objects,
     }
     return render(request, 'project_structure/object/object_connections_edit.html', context)
+
+
+@login_required(login_url='login')
+def objects_by_tag(request, project_pk, tag_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        tag = Tags.objects.get(id=tag_pk)
+        if tag.user != request.user:
+            return redirect('access_denied')
+    except Tags.DoesNotExist:
+        return redirect('view_project', project_pk=project.id)
+
+    objects = ProjectObjects.objects.filter(tags__id=tag.id)
+
+    paginator = Paginator(objects, 5)
+    page_number = request.GET.get('page')
+    page_objects = paginator.get_page(page_number)
+
+    context = {
+        'project': project,
+        'tag': tag,
+        'objects': objects,
+        'page_objects': page_objects
+    }
+    return render(request, 'project_structure/object/objects_by_tag.html', context)

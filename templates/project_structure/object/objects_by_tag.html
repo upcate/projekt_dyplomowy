@@ -1,0 +1,30 @@
+{% if page_objects.object_list|length == 0 %}
+    Żaden obiekt nie ma jeszcze tego tagu. <a href="{% url 'object_list' project_pk=project.id %}"> Lista obiektów. </a> <br>
+{% else %}
+    Obiekty dla tagu {{ tag }} <br>
+    <a href="{% url 'tag_list' project_pk=project.id %}"> Powrót </a> <br>
+    <table>
+        <tr>
+                <th> Tag </th>
+        <tr>
+            {% for object in page_objects %}
+                <tr>
+                    <td> <a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}"> {{ object }} </a> </td>
+                </tr>
+            {% endfor %}
+    </table>
+
+    {% if page_objects.has_other_pages %}
+        {% if page_objects.has_previous %}
+            <a href="?page=1"> &lsaquo; Początek </a>
+            <a href="?page={{ page_objects.previous_page_number }}"> &lsaquo; Poprzednia </a>
+        {% endif %}
+
+        Strona {{ page_objects.number }} z {{ page_objects.paginator.num_pages }}
+
+        {% if page_objects.has_next %}
+            <a href="?page={{ page_objects.next_page_number }}"> &rsaquo; Następna </a>
+            <a href="?page={{ page_objects.paginator.num_pages }}"> &rsaquo; Ostatnia </a>
+        {% endif %}
+    {% endif %}
+{% endif %}

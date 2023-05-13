@@ -27,6 +27,5 @@ urlpatterns = [
     path('project/<str:project_pk>/object/<str:object_pk>', views.object_view, name='object_view'),
     path('project/<str:project_pk>/object/<str:object_pk>/tags/edit', views.object_tag_edit, name='object_tags_edit'),
     path('project/<str:project_pk>/object/<str:object_pk>/connections/edit', views.object_connections_edit, name='objects_connections_edit'),
-
-
+    path('project/<str:project_pk>/objects/tag/<str:tag_pk>', views.objects_by_tag, name='objects_by_tag'),
 ]
