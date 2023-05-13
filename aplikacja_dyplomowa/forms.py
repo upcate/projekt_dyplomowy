@@ -1,10 +1,9 @@
 from django import forms
 from django.forms import ModelForm, CharField, Form
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, ValidationError
+from django.contrib.auth.forms import UserCreationForm, ValidationError, PasswordChangeForm
 from django.contrib.auth import password_validation
 from .models import Projects, Tags, ProjectObjects
-# from django_select2 import forms as s2forms
 
 
 class CreateUserForm(UserCreationForm):
@@ -43,6 +42,54 @@ class CreateUserForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise ValidationError('Ten mail jest już w użyciu.')
         return email
+
+
+class UpdateUserForm(forms.ModelForm):
+
+    user = None
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+        labels = {
+            'username': 'Nazwa użytkownika',
+            'email': 'Email',
+        }
+
+    def __init__(self, *args, user, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+
+        if User.objects.filter(username=username).exclude(id=self.user.id).exists():
+            raise ValidationError('Użytkownik o tej samej nazwie już istnieje.')
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+
+        if User.objects.filter(email=email).exclude(id=self.user.id).exists():
+            raise ValidationError('Ten mail jest już w użyciu.')
+        return email
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['old_password'].label = 'Obecne hasło'
+        self.fields['new_password1'].label = 'Nowe hasło'
+        self.fields['new_password2'].label = 'Potwierdź nowe hasło'
+
+    error_messages = {
+        'password_mismatch': 'Nowe hasła nie zgadzają się.',
+        'password_incorrect': 'Twoje stare hasło zostało źle wprowadzone.',
+    }
+
+
 
 
 class ProjectForm(ModelForm):
@@ -91,9 +138,12 @@ class ProjectObjectAddTagForm(Form):
 
     tags = forms.ModelMultipleChoiceField(queryset=Tags.objects.none(), widget=forms.CheckboxSelectMultiple, required=False)
 
-# class Meta:
-    #     model = ProjectObjects
-    #     fields = ['tags']
-    #     labels = {
-    #         'tags': 'Tagi',
-    #     }
+
+class ProjectObjectAddConnectionForm(Form):
+
+    def __init__(self, *args, project=None, object_to_view=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['connections'].queryset = ProjectObjects.objects.filter(project=project).exclude(id=object_to_view.id)
+        self.fields['connections'].initial = object_to_view.connections.all()
+
+    connections = forms.ModelMultipleChoiceField(queryset=ProjectObjects.objects.none(), widget=forms.CheckboxSelectMultiple, required=False)

@@ -1,16 +1,23 @@
 from django.shortcuts import render, redirect
 
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .forms import CreateUserForm, ProjectForm, TagForm, ProjectObjectForm, ProjectObjectAddTagForm
+from .forms import (
+    CreateUserForm,
+    ProjectForm,
+    TagForm,
+    ProjectObjectForm,
+    ProjectObjectAddTagForm,
+    ProjectObjectAddConnectionForm,
+    UpdateUserForm,
+    CustomPasswordChangeForm,
+)
 
 from .models import Projects, ProjectObjects, Tags, Files
 
 from django.db import IntegrityError
-
-from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -78,6 +85,55 @@ def logout_user(request):
 
 
 @login_required(login_url='login')
+def account_view(request):
+
+    user = request.user
+
+    context = {
+        'user': user
+    }
+    return render(request, 'accounts/account_view.html', context)
+
+
+@login_required(login_url='login')
+def account_update(request):
+
+    user = request.user
+    form = UpdateUserForm(instance=user, user=user)
+    if request.method == 'POST':
+        form = UpdateUserForm(request.POST, instance=user, user=user)
+        if form.is_valid():
+            form.save()
+            return redirect('account_view')
+
+    context = {
+        'user': user,
+        'form': form,
+    }
+    return render(request, 'accounts/account_update.html', context)
+
+
+@login_required(login_url='login')
+def account_update_password(request):
+
+    user = request.user
+    form = CustomPasswordChangeForm(user)
+
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Hasło zostało zmienione pomyślnie.')
+            return redirect('account_update_password')
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'accounts/account_update_password.html', context)
+
+
+@login_required(login_url='login')
 def show_projects(request):
 
     projects = Projects.objects.filter(user=request.user)
@@ -100,8 +156,6 @@ def create_project(request):
                 project = form.save(commit=False)
                 project.user = user
                 project.save()
-                # Na razie redirectuje do listy projektów, ale jak dodam widok obiektu, to po stworzeniu tam go
-                # przedirectuje
                 return redirect('view_project', project_pk=project.id)
             except IntegrityError:
                 form.add_error(None, 'Projekt o tej nazwie już istnieje.')
@@ -248,7 +302,7 @@ def tag_update(request, project_pk, tag_pk):
     except Tags.DoesNotExist:
         return redirect('tag_list', project_pk=project_pk)
 
-    form = TagForm()
+    form = TagForm(instance=tag)
     if request.method == 'POST':
         form = TagForm(request.POST, instance=tag)
         if form.is_valid():
@@ -346,7 +400,37 @@ def object_create(request, project_pk):
 
 @login_required(login_url='login')
 def object_update(request, project_pk, object_pk):
-    pass
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        object_to_update = ProjectObjects.objects.get(id=object_pk)
+        if object_to_update.user != request.user:
+            return redirect('access_denied')
+    except ProjectObjects.DoesNotExist:
+        return redirect('object_list', project_pk=project.id)
+
+    form = ProjectObjectForm(instance=object_to_update)
+    if request.method == 'POST':
+        form = ProjectObjectForm(request.POST, instance=object_to_update)
+        if form.is_valid():
+            try:
+                form.save()
+                return redirect('object_view', project_pk=project.id, object_pk=object_to_update.id)
+            except IntegrityError:
+                form.add_error(None, 'Obiekt o takiej nazwie już istnieje.')
+
+    context = {
+        'form': form,
+        'project': project,
+        'object': object_to_update,
+    }
+    return render(request, 'project_structure/object/object.update.html', context)
 
 
 @login_required(login_url='login')
@@ -409,39 +493,6 @@ def object_view(request, project_pk, object_pk):
 
 
 @login_required(login_url='login')
-def object_connections(request, project_pk, object_pk):
-
-    try:
-        project = Projects.objects.get(id=project_pk)
-        if project.user != request.user:
-            return redirect('access_denied')
-    except Projects.DoesNotExist:
-        return redirect('project_list')
-
-    try:
-        object_to_view = ProjectObjects.objects.get(id=object_pk)
-        if object_to_view.user != request.user:
-            return redirect('access_denied')
-    except ProjectObjects.DoesNotExist:
-        return redirect('object_list', project_pk=project.id)
-
-    connections = object_to_view.connections.all()
-
-    paginator = Paginator(connections, 5)
-    page_number = request.GET.get('page')
-    page_connection = paginator.get_page(page_number)
-
-    context = {
-        'project': project,
-        'object': object_to_view,
-        'connections': connections,
-        'page_connection': page_connection,
-        'column_headers': ['Połączenie', 'Usuń']
-    }
-    return render(request, 'project_structure/object/object_connections.html', context)
-
-
-@login_required(login_url='login')
 def object_tag_edit(request, project_pk, object_pk):
 
     try:
@@ -488,10 +539,46 @@ def object_tag_edit(request, project_pk, object_pk):
 
 
 @login_required(login_url='login')
-def object_connection_add(request, project_pk, object_pk):
-    pass
+def object_connections_edit(request, project_pk, object_pk):
 
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
 
-@login_required(login_url='login')
-def object_connection_delete(request, project_pk, object_pk):
-    pass
+    try:
+        object_to_view = ProjectObjects.objects.get(id=object_pk)
+        if object_to_view.user != request.user:
+            return redirect('access_denied')
+    except ProjectObjects.DoesNotExist:
+        return redirect('object_list', project_pk=project.id)
+
+    form = ProjectObjectAddConnectionForm(project=project, object_to_view=object_to_view)
+    objects = ProjectObjects.objects.filter(project=project)
+
+    if request.method == 'POST':
+        form = ProjectObjectAddConnectionForm(request.POST, project=project, object_to_view=object_to_view)
+        if form.is_valid():
+            connections_from_form = form.cleaned_data['connections']
+            current_connections = set(object_to_view.connections.all())
+
+            connections_to_add = set(connections_from_form) - current_connections
+            connections_to_remove = current_connections - set(connections_from_form)
+
+            for connection in connections_to_add:
+                object_to_view.connections.add(connection)
+
+            for connection in connections_to_remove:
+                object_to_view.connections.remove(connection)
+
+            return redirect('object_view', project_pk=project.id, object_pk=object_to_view.id)
+
+    context = {
+        'form': form,
+        'object': object_to_view,
+        'project': project,
+        'objects': objects,
+    }
+    return render(request, 'project_structure/object/object_connections_edit.html', context)

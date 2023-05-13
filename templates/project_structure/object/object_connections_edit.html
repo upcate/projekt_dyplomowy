@@ -1,0 +1,11 @@
+<a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}"> Powrót </a> <br>
+{% if objects|length == 1 %}
+    W projekcie jest tylko ten projekt. <a href="{% url 'object_create' project_pk=project.id %}"> Przejdź do tworzenia obiektów. </a>
+{% else %}
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ form.connections.label }} <br>
+        {{ form.connections }} <br>
+        <input type="submit" value="Zapisz">
+    </form>
+{% endif %}

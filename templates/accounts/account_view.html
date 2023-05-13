@@ -1,0 +1,9 @@
+Informacje: <br>
+Nazwa użytkownika: {{ user.username }} <br>
+Email: {{ user.email }} <br> <br>
+
+<a href="{% url 'account_update' %}"> Zmiana danych </a>
+<a href="{% url 'account_update_password' %}"> Zmiana hasła </a> <br> <br>
+
+<a href="{% url 'main' %}"> Powrót </a>
+
