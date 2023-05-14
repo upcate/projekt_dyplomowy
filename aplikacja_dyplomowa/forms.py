@@ -3,7 +3,7 @@ from django.forms import ModelForm, CharField, Form
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, ValidationError, PasswordChangeForm
 from django.contrib.auth import password_validation
-from .models import Projects, Tags, ProjectObjects
+from .models import Projects, Tags, ProjectObjects, Files
 
 
 class CreateUserForm(UserCreationForm):
@@ -90,8 +90,6 @@ class CustomPasswordChangeForm(PasswordChangeForm):
     }
 
 
-
-
 class ProjectForm(ModelForm):
     class Meta:
         model = Projects
@@ -147,3 +145,13 @@ class ProjectObjectAddConnectionForm(Form):
         self.fields['connections'].initial = object_to_view.connections.all()
 
     connections = forms.ModelMultipleChoiceField(queryset=ProjectObjects.objects.none(), widget=forms.CheckboxSelectMultiple, required=False)
+
+
+class FilesForm(ModelForm):
+    class Meta:
+        model = Files
+        fields = ['file_name', 'file']
+        labels = {
+            'file': 'Plik',
+            'file_name': 'Nazwa pliku',
+        }

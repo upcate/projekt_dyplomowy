@@ -1,0 +1,10 @@
+<form>
+    {% csrf_token %}
+    {{ form.file_name.label }}
+    {{ form.file_name }} <br>
+
+    {{ form.file.label }}
+    {{ form.file }} <br>
+    <input type="submit" value="Prześlij">
+</form>
+<a href="{% url 'project_file_list' project_pk=project.id %}"> Powrót </a>

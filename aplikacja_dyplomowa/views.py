@@ -13,6 +13,7 @@ from .forms import (
     ProjectObjectAddConnectionForm,
     UpdateUserForm,
     CustomPasswordChangeForm,
+    FilesForm,
 )
 
 from .models import Projects, ProjectObjects, Tags, Files
@@ -614,3 +615,46 @@ def objects_by_tag(request, project_pk, tag_pk):
         'page_objects': page_objects
     }
     return render(request, 'project_structure/object/objects_by_tag.html', context)
+
+
+@login_required(login_url='login')
+def project_file_list(request, project_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    files = Files.objects.filter(project=project)
+
+    paginator = Paginator(files, 5)
+    page_number = request.GET.get('page')
+    page_files = paginator.get_page(page_number)
+
+    context = {
+        'project': project,
+        'files': files,
+        'page_files': page_files,
+    }
+    return render(request, 'project_structure/files/file_list.html', context)
+
+
+@login_required(login_url='login')
+def project_file_upload(request, project_pk):
+
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    form = FilesForm()
+
+    context = {
+        'form': form,
+        'project': project,
+    }
+    return render(request, 'project_structure/files/file_upload.html', context)
