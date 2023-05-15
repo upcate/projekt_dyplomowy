@@ -59,13 +59,15 @@ class Files(models.Model):
     file_name = models.CharField(max_length=16)
     file = models.FileField()
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    tags = models.ManyToManyField(Tags)
     uploadedAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ['file_name', 'project', 'user']
+
+    def __str__(self):
+        return f'{self.file_name}'
 
 
 class MainFiles(models.Model):

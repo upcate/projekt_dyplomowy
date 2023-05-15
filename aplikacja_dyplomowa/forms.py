@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, ValidationError, PasswordChangeForm
 from django.contrib.auth import password_validation
 from .models import Projects, Tags, ProjectObjects, Files
+from .custom_validators import file_too_big
 
 
 class CreateUserForm(UserCreationForm):
@@ -148,6 +149,9 @@ class ProjectObjectAddConnectionForm(Form):
 
 
 class FilesForm(ModelForm):
+
+    # file = forms.FileField(validators=[FileExtensionValidator(['pdf', 'docx', 'txt', 'png', 'jpg', 'jpeg'])])
+
     class Meta:
         model = Files
         fields = ['file_name', 'file']
@@ -155,3 +159,21 @@ class FilesForm(ModelForm):
             'file': 'Plik',
             'file_name': 'Nazwa pliku',
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        file = cleaned_data.get('file')
+
+        if file:
+            if file_too_big(file):
+                self.add_error(None, ValidationError('Plik jest za duży. Maksymalny rozmiar to 5 MB.'))
+
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     file = cleaned_data.get('file')
+    #
+    #     if file:
+    #         try:
+    #             self.fields['file'].validators[0](file)
+    #         except ValidationError:
+    #             self.add_error(None, ValidationError)

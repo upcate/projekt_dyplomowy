@@ -103,3 +103,23 @@ class CustomUserAttributeSimilarityValidator(UserAttributeSimilarityValidator):
         return _(
             "Your password can’t be too similar to your other personal information."
         )
+
+
+def file_too_big(value):
+    filesize = value.size
+
+    if filesize > 5242880:
+        return True
+    else:
+        return False
+
+
+# class FileExtensionValidator:
+#
+#     def __init__(self, allowed_extensions):
+#         self.allowed_extensions = allowed_extensions
+#
+#     def __call__(self, value):
+#         extension = value.name.split('.')[-1].lower()
+#         if extension not in self.allowed_extensions:
+#             raise ValidationError(f"Niedozwolony format pliku! Dozwolone formaty to: {','.join(self.allowed_extensions)}")

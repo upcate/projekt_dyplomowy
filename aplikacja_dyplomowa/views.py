@@ -22,6 +22,8 @@ from django.db import IntegrityError
 
 from django.core.paginator import Paginator
 
+from django.http import HttpResponse
+
 # Create your views here.
 
 
@@ -653,8 +655,23 @@ def project_file_upload(request, project_pk):
 
     form = FilesForm()
 
+    if request.method == 'POST':
+        form = FilesForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                file = form.save(commit=False)
+                file.project = project
+                file.user = request.user
+                file.save()
+                return redirect('project_file_list', project_pk=project.id)
+            except IntegrityError:
+                form.add_error(None, 'Plik o takiej nazwie już istnieje')
+
+    ferrors = form.errors
+
     context = {
         'form': form,
         'project': project,
+        'ferrors': ferrors,
     }
     return render(request, 'project_structure/files/file_upload.html', context)

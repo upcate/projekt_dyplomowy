@@ -1,4 +1,4 @@
-<form>
+<form method="POST" action="" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.file_name.label }}
     {{ form.file_name }} <br>
@@ -6,5 +6,13 @@
     {{ form.file.label }}
     {{ form.file }} <br>
     <input type="submit" value="Prześlij">
+    {% if form.non_field_errors %}
+        <br><br> Błędy:
+        <ul>
+            {% for error in form.non_field_errors %}
+                <li> {{ error }} </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 </form>
 <a href="{% url 'project_file_list' project_pk=project.id %}"> Powrót </a>
