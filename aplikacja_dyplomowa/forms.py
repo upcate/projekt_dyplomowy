@@ -3,8 +3,9 @@ from django.forms import ModelForm, CharField, Form
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, ValidationError, PasswordChangeForm
 from django.contrib.auth import password_validation
-from .models import Projects, Tags, ProjectObjects, Files
+from .models import Projects, Tags, ProjectObjects, Files, MainFiles
 from .custom_validators import file_too_big
+from django.core.validators import FileExtensionValidator
 
 
 class CreateUserForm(UserCreationForm):
@@ -150,8 +151,6 @@ class ProjectObjectAddConnectionForm(Form):
 
 class FilesForm(ModelForm):
 
-    # file = forms.FileField(validators=[FileExtensionValidator(['pdf', 'docx', 'txt', 'png', 'jpg', 'jpeg'])])
-
     class Meta:
         model = Files
         fields = ['file_name', 'file']
@@ -165,15 +164,54 @@ class FilesForm(ModelForm):
         file = cleaned_data.get('file')
 
         if file:
+            validator = FileExtensionValidator(['txt', 'docx', 'csv', 'pdf', 'jpg', 'png'])
             if file_too_big(file):
                 self.add_error(None, ValidationError('Plik jest za duży. Maksymalny rozmiar to 5 MB.'))
+            try:
+                validator(file)
+            except ValidationError:
+                self.add_error(None, 'Niedozwolony rodzaj pliku. Akceptowane rozszerzenia to: txt, docx, csv, png, jpg i pdf')
 
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     file = cleaned_data.get('file')
-    #
-    #     if file:
-    #         try:
-    #             self.fields['file'].validators[0](file)
-    #         except ValidationError:
-    #             self.add_error(None, ValidationError)
+
+class FilesUpdateForm(ModelForm):
+
+    class Meta:
+        model = Files
+        fields = ['file_name']
+        labels = {
+            'file_name': 'Nazwa pliku',
+        }
+
+
+class MainFilesForm(ModelForm):
+
+    class Meta:
+        model = MainFiles
+        fields = ['file_name', 'file']
+        labels = {
+            'file_name': 'Nazwa pliku',
+            'file': 'Plik',
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        main_file = cleaned_data.get('file')
+
+        if main_file:
+            validator = FileExtensionValidator(['txt', 'docx', 'csv'])
+            if file_too_big(main_file):
+                self.add_error(None, ValidationError('Plik jest za duży. Maksymalny rozmiar to 5 MB.'))
+            try:
+                validator(main_file)
+            except ValidationError:
+                self.add_error(None, 'Niedozwolony rodzaj pliku. Akceptowane rozszerzenia to: txt, docx i csv')
+
+
+class MainFileUpdateForm(ModelForm):
+
+    class Meta:
+        model = MainFiles
+        fields = ['file_name']
+        labels = {
+            'file_name': 'Nazwa pliku',
+        }

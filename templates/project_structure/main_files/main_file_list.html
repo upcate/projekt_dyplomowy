@@ -1,0 +1,32 @@
+{% if main_files|length == 0 %}
+    Ten projekt nie ma jeszcze plików związanych z fabułą. <a href="{% url 'main_file_upload' project_pk=project.id %}"> Prześlij plik </a> <br>
+    <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a>
+{% else %}
+    Pliki z fabułą projektu {{ project }} <br>
+    <a href="{% url 'main_file_upload' project_pk=project.id %}"> Prześlij plik </a> <br>
+    <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a> <br>
+    <table>
+        <tr>
+                <th> Plik </th>
+        <tr>
+            {% for main_file in page_main_files %}
+                <tr>
+                    <td> <a href="{% url 'main_file_view' project_pk=project.id main_file_pk=main_file.id %}"> {{ main_file }} </a> </td>
+                </tr>
+            {% endfor %}
+    </table>
+
+    {% if page_main_files.has_other_pages %}
+        {% if page_main_files.has_previous %}
+            <a href="?page=1"> &lsaquo; Początek </a>
+            <a href="?page={{ page_main_files.previous_page_number }}"> &lsaquo; Poprzednia </a>
+        {% endif %}
+
+        Strona {{ page_main_files.number }} z {{ page_main_files.paginator.num_pages }}
+
+        {% if page_files.has_next %}
+            <a href="?page={{ page_main_files.next_page_number }}"> &rsaquo; Następna </a>
+            <a href="?page={{ page_main_files.paginator.num_pages }}"> &rsaquo; Ostatnia </a>
+        {% endif %}
+    {% endif %}
+{% endif %}

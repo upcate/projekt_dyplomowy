@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import render, redirect
 
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -14,21 +16,24 @@ from .forms import (
     UpdateUserForm,
     CustomPasswordChangeForm,
     FilesForm,
+    FilesUpdateForm,
+    MainFilesForm,
+    MainFileUpdateForm,
 )
 
-from .models import Projects, ProjectObjects, Tags, Files
+from .models import Projects, ProjectObjects, Tags, Files, MainFiles
 
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 
 from django.core.paginator import Paginator
 
-from django.http import HttpResponse
+from django.http import FileResponse
+
 
 # Create your views here.
 
 
 def main(request):
-
     return render(request, 'main_structure/main.html')
 
 
@@ -38,7 +43,6 @@ def access_denied(request):
 
 
 def register(request):
-
     if request.user.is_authenticated:
         return redirect('main')
     else:
@@ -60,7 +64,6 @@ def register(request):
 
 
 def login_page(request):
-
     if request.user.is_authenticated:
         return redirect('main')
     else:
@@ -84,14 +87,12 @@ def login_page(request):
 
 
 def logout_user(request):
-
     logout(request)
     return redirect('main')
 
 
 @login_required(login_url='login')
 def account_view(request):
-
     user = request.user
 
     context = {
@@ -102,7 +103,6 @@ def account_view(request):
 
 @login_required(login_url='login')
 def account_update(request):
-
     user = request.user
     form = UpdateUserForm(instance=user, user=user)
     if request.method == 'POST':
@@ -120,7 +120,6 @@ def account_update(request):
 
 @login_required(login_url='login')
 def account_update_password(request):
-
     user = request.user
     form = CustomPasswordChangeForm(user)
 
@@ -140,7 +139,6 @@ def account_update_password(request):
 
 @login_required(login_url='login')
 def show_projects(request):
-
     projects = Projects.objects.filter(user=request.user)
 
     context = {
@@ -151,7 +149,6 @@ def show_projects(request):
 
 @login_required(login_url='login')
 def create_project(request):
-
     form = ProjectForm()
     if request.method == 'POST':
         form = ProjectForm(request.POST)
@@ -173,7 +170,6 @@ def create_project(request):
 
 @login_required(login_url='login')
 def update_project(request, project_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -200,7 +196,6 @@ def update_project(request, project_pk):
 
 @login_required(login_url='login')
 def delete_project(request, project_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -222,7 +217,6 @@ def delete_project(request, project_pk):
 
 @login_required(login_url='login')
 def view_project(request, project_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -241,7 +235,6 @@ def view_project(request, project_pk):
 
 @login_required(login_url='login')
 def tag_list(request, project_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -258,7 +251,6 @@ def tag_list(request, project_pk):
 
 @login_required(login_url='login')
 def tag_create(request, project_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -290,7 +282,6 @@ def tag_create(request, project_pk):
 
 @login_required(login_url='login')
 def tag_update(request, project_pk, tag_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -325,7 +316,6 @@ def tag_update(request, project_pk, tag_pk):
 
 @login_required(login_url='login')
 def tag_delete(request, project_pk, tag_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -355,7 +345,6 @@ def tag_delete(request, project_pk, tag_pk):
 
 @login_required(login_url='login')
 def object_list(request, project_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -372,7 +361,6 @@ def object_list(request, project_pk):
 
 @login_required(login_url='login')
 def object_create(request, project_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -403,7 +391,6 @@ def object_create(request, project_pk):
 
 @login_required(login_url='login')
 def object_update(request, project_pk, object_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -438,7 +425,6 @@ def object_update(request, project_pk, object_pk):
 
 @login_required(login_url='login')
 def object_delete(request, project_pk, object_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -468,7 +454,6 @@ def object_delete(request, project_pk, object_pk):
 
 @login_required(login_url='login')
 def object_view(request, project_pk, object_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -497,7 +482,6 @@ def object_view(request, project_pk, object_pk):
 
 @login_required(login_url='login')
 def object_tag_edit(request, project_pk, object_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -543,7 +527,6 @@ def object_tag_edit(request, project_pk, object_pk):
 
 @login_required(login_url='login')
 def object_connections_edit(request, project_pk, object_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -589,7 +572,6 @@ def object_connections_edit(request, project_pk, object_pk):
 
 @login_required(login_url='login')
 def objects_by_tag(request, project_pk, tag_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -621,7 +603,6 @@ def objects_by_tag(request, project_pk, tag_pk):
 
 @login_required(login_url='login')
 def project_file_list(request, project_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -645,7 +626,6 @@ def project_file_list(request, project_pk):
 
 @login_required(login_url='login')
 def project_file_upload(request, project_pk):
-
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -659,19 +639,289 @@ def project_file_upload(request, project_pk):
         form = FilesForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                file = form.save(commit=False)
-                file.project = project
-                file.user = request.user
-                file.save()
-                return redirect('project_file_list', project_pk=project.id)
+                with transaction.atomic():
+                    file = form.save(commit=False)
+                    file.project = project
+                    file.user = request.user
+                    file.save()
+                    return redirect('project_file_view', project_pk=project.id, file_pk=file.id)
             except IntegrityError:
                 form.add_error(None, 'Plik o takiej nazwie już istnieje')
+                file_path = file.file.path
+                os.remove(file_path)
 
-    ferrors = form.errors
+    form_errors = form.errors
 
     context = {
         'form': form,
         'project': project,
-        'ferrors': ferrors,
+        'form_errors': form_errors,
     }
     return render(request, 'project_structure/files/file_upload.html', context)
+
+
+@login_required(login_url='login')
+def project_file_view(request, project_pk, file_pk):
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        file = Files.objects.get(id=file_pk)
+        if file.user != request.user:
+            return redirect('access_denied')
+    except Files.DoesNotExist:
+        return redirect('project_file_list', project_pk=project.id)
+
+    context = {
+        'project': project,
+        'file': file,
+        'file_size': round(file.file.size / 1024, 2)
+    }
+    return render(request, 'project_structure/files/file_view.html', context)
+
+
+@login_required(login_url='login')
+def project_file_delete(request, project_pk, file_pk):
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        file = Files.objects.get(id=file_pk)
+        if file.user != request.user:
+            return redirect('access_denied')
+    except Files.DoesNotExist:
+        return redirect('project_file_list', project_pk=project.id)
+
+    if request.method == 'POST':
+        file.delete()
+        return redirect('project_file_list', project_pk=project.id)
+
+    context = {
+        'project': project,
+        'file': file,
+    }
+    return render(request, 'project_structure/files/file_delete.html', context)
+
+
+@login_required(login_url='login')
+def project_file_update(request, project_pk, file_pk):
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        file = Files.objects.get(id=file_pk)
+        if file.user != request.user:
+            return redirect('access_denied')
+    except Files.DoesNotExist:
+        return redirect('project_file_list', project_pk=project.id)
+
+    form = FilesUpdateForm(instance=file)
+    if request.method == 'POST':
+        form = FilesUpdateForm(request.POST, request.FILES, instance=file)
+        if form.is_valid():
+            try:
+                form.save()
+                return redirect('project_file_view', project_pk=project.id, file_pk=file.id)
+            except IntegrityError:
+                form.add_error(None, 'Plik o takiej nazwie już istnieje.')
+
+    context = {
+        'file': file,
+        'project': project,
+        'form': form,
+    }
+    return render(request, 'project_structure/files/file_update.html', context)
+
+
+@login_required(login_url='login')
+def project_file_download(request, project_pk, file_pk):
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        file = Files.objects.get(id=file_pk)
+        if file.user != request.user:
+            return redirect('access_denied')
+    except Files.DoesNotExist:
+        return redirect('project_file_list', project_pk=project.id)
+
+    return FileResponse(file.file, as_attachment=True)
+
+
+@login_required(login_url='login')
+def main_file_list(request, project_pk):
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    main_files = MainFiles.objects.filter(project=project)
+
+    paginator = Paginator(main_files, 5)
+    page_number = request.GET.get('page')
+    page_main_files = paginator.get_page(page_number)
+
+    context = {
+        'project': project,
+        'main_files': main_files,
+        'page_main_files': page_main_files,
+    }
+    return render(request, 'project_structure/main_files/main_file_list.html', context)
+
+
+@login_required(login_url='login')
+def main_file_upload(request, project_pk):
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    form = MainFilesForm()
+
+    if request.method == 'POST':
+        form = MainFilesForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    main_file = form.save(commit=False)
+                    main_file.project = project
+                    main_file.user = request.user
+                    main_file.save()
+                    return redirect('main_file_view', project_pk=project.id, main_file_pk=main_file.id)
+            except IntegrityError:
+                form.add_error(None, 'Plik o takiej nazwie już istnieje')
+                file_path = main_file.file.path
+                os.remove(file_path)
+
+    form_errors = form.errors
+
+    context = {
+        'form': form,
+        'project': project,
+        'form_errors': form_errors,
+    }
+    return render(request, 'project_structure/main_files/main_file_upload.html', context)
+
+
+@login_required(login_url='login')
+def main_file_update(request, project_pk, main_file_pk):
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        main_file = Files.objects.get(id=main_file_pk)
+        if main_file.user != request.user:
+            return redirect('access_denied')
+    except MainFiles.DoesNotExist:
+        return redirect('main_file_list', project_pk=project.id)
+
+    form = MainFileUpdateForm(instance=main_file)
+    if request.method == 'POST':
+        form = MainFileUpdateForm(request.POST, request.FILES, instance=main_file)
+        if form.is_valid():
+            try:
+                form.save()
+                return redirect('main_file_view', project_pk=project.id, main_file_pk=main_file.id)
+            except IntegrityError:
+                form.add_error(None, 'Plik o takiej nazwie już istnieje.')
+
+    context = {
+        'main_file': main_file,
+        'project': project,
+        'form': form,
+    }
+    return render(request, 'project_structure/main_files/main_file_update.html', context)
+
+
+@login_required(login_url='login')
+def main_file_delete(request, project_pk, main_file_pk):
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        main_file = MainFiles.objects.get(id=main_file_pk)
+        if main_file.user != request.user:
+            return redirect('access_denied')
+    except MainFiles.DoesNotExist:
+        return redirect('main_file_list', project_pk=project.id)
+
+    if request.method == 'POST':
+        main_file.delete()
+        return redirect('main_file_list', project_pk=project.id)
+
+    context = {
+        'project': project,
+        'main_file': main_file,
+    }
+    return render(request, 'project_structure/main_files/main_file_delete.html', context)
+
+
+@login_required(login_url='login')
+def main_file_view(request, project_pk, main_file_pk):
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        main_file = MainFiles.objects.get(id=main_file_pk)
+        if main_file.user != request.user:
+            return redirect('access_denied')
+    except MainFiles.DoesNotExist:
+        return redirect('main_file_list', project_pk=project.id)
+
+    context = {
+        'project': project,
+        'main_file': main_file,
+        'main_file_size': round(main_file.file.size / 1024, 2)
+    }
+    return render(request, 'project_structure/main_files/main_file_view.html', context)
+
+
+@login_required(login_url='login')
+def main_file_download(request, project_pk, main_file_pk):
+    try:
+        project = Projects.objects.get(id=project_pk)
+        if project.user != request.user:
+            return redirect('access_denied')
+    except Projects.DoesNotExist:
+        return redirect('project_list')
+
+    try:
+        main_file = MainFiles.objects.get(id=main_file_pk)
+        if main_file.user != request.user:
+            return redirect('access_denied')
+    except MainFiles.DoesNotExist:
+        return redirect('main_file_list', project_pk=project.id)
+
+    return FileResponse(main_file.file, as_attachment=True)

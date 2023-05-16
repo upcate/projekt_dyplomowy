@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import os
 
 
 # Create your models here.
@@ -69,6 +70,9 @@ class Files(models.Model):
     def __str__(self):
         return f'{self.file_name}'
 
+    def filename(self):
+        return os.path.basename(self.file.name)
+
 
 class MainFiles(models.Model):
     file_name = models.CharField(max_length=16)
@@ -80,3 +84,9 @@ class MainFiles(models.Model):
 
     class Meta:
         unique_together = ['file_name', 'project', 'user']
+
+    def __str__(self):
+        return f'{self.file_name}'
+
+    def filename(self):
+        return os.path.basename(self.file.name)

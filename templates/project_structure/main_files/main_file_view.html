@@ -1,0 +1,9 @@
+Nazwa pliku: {{ main_file.file_name }} <br>
+Plik: {{ main_file.filename }} <br>
+Rozmiar pliku: {{ main_file_size }}kB <br>
+
+<a href="{% url 'main_file_update' project_pk=project.id main_file_pk=main_file.id %}"> Edytuj </a>
+<a href="{% url 'main_file_delete' project_pk=project.id main_file_pk=main_file.id %}"> Usuń </a>
+<a href="{% url 'main_file_download' project_pk=project.id main_file_pk=main_file.id %}"> Pobierz </a> <br>
+
+<a href="{% url 'main_file_list' project_pk=project.id %}"> Powrót </a>

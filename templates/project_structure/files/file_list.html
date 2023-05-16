@@ -11,7 +11,7 @@
         <tr>
             {% for file in page_files %}
                 <tr>
-                    <td> <a> {{ file }} </a> </td>
+                    <td> <a href="{% url 'project_file_view' project_pk=project.id file_pk=file.id %}"> {{ file }} </a> </td>
                 </tr>
             {% endfor %}
     </table>

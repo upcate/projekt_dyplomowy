@@ -1,0 +1,6 @@
+Czy chcesz usunąć {{ file }}? <br>
+<form method="POST" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="submit" value="Usuń">
+    <a href="{% url 'project_file_view' project_pk=project.id file_pk=file.id %}"> Powrót </a>
+</form>
