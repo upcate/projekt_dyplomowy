@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import ModelForm, CharField, Form
+from django.forms import ModelForm, Form
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, ValidationError, PasswordChangeForm
 from django.contrib.auth import password_validation
@@ -22,6 +22,10 @@ class CreateUserForm(UserCreationForm):
         widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
         help_text='Enter the same password as before, for verification.',
     )
+
+    error_messages = {
+        'password_mismatch': 'Hasła się nie zgadzają.'
+    }
 
     class Meta:
         model = User

@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&family=Poppins&display=swap');
+
+
 :root {
     --black: #0a0908ff;
     --gunmetal: #22333bff;
@@ -9,16 +12,33 @@
 body {
     background-color: var(--almond);
     margin-bottom: 15%;
+    font-family: 'Lato', sans-serif;
+
 }
 
-.navbar-text .navbar-brand {
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem;
+
+}
+
+.navbar-brand {
     color: var(--almond);
+    font-weight: bold;
+    font-size: 1.2rem;
 }
 
-body::after {
-    content: '';
-    display: block;
-    height: 15%;
+.navbar-nav {
+    display: flex;
+    right: 0;
+    margin-left: 2rem;
+    font-size: 1rem;
+}
+
+.username {
+    font-weight: bold;
 }
 
 footer {
@@ -29,14 +49,26 @@ footer {
 }
 
 .big-div {
-    margin-top: 15%;
+    margin-top: 23vh;
     width: auto;
+}
+
+.main-desc {
+    font-family: 'Poppins', sans-serif;
+}
+
+.main-desc h3 {
+    font-size: 1.7rem;
+}
+
+.main-desc h4 {
+    font-size: 1.4rem;
 }
 
 .custom-button {
     background-color: var(--walnut-brown);
     color: var(--almond);
-    font-size: 21pt;
+    font-size: 1.4rem;
 }
 
 .custom-from-button {
@@ -53,4 +85,29 @@ footer {
     background-color: var(--khaki);
     color: var(--almond);
 
+}
+
+.register-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10vh;
+}
+
+.register-form h3{
+    font-weight: bold;
+}
+
+.register-form p{
+    margin-top: 5vh;
+
+}
+
+.log-submit{
+    margin-top: 10px;
+
+}
+.register-form .form-group{
+    padding: 1vmin;
+    border-radius: 10px;
 }
