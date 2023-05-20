@@ -925,3 +925,11 @@ def main_file_download(request, project_pk, main_file_pk):
         return redirect('main_file_list', project_pk=project.id)
 
     return FileResponse(main_file.file, as_attachment=True)
+
+
+def handle_not_found(request, exception):
+    return render(request, 'main_structure/404.html')
+
+
+def handle_500(request, exception):
+    return render(request, 'main_structure/500.html')

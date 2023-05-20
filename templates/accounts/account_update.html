@@ -1,23 +1,35 @@
-<form method="POST" action="">
-    {% csrf_token %}
-    {{ form.username.label }}
-    {{ form.username }} <br>
+{% extends 'base.html' %}
 
-    {{ form.email.label }}
-    {{ form.email }} <br>
+{% block content %}
+    <form method="POST" action="" class="px-md-2">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label for="{{ form.username.id_for_label }}" class="col-sm-2 col-form-label">{{ form.username.label }}</label>
+            <div class="col-sm-10">
+                {{ form.username }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="{{ form.email.id_for_label }}" class="col-sm-2 col-form-label">{{ form.email.label }}</label>
+            <div class="col-sm-10">
+                {{ form.email }}
+            </div>
+        </div>
 
-    <input type="submit" value="Zapisz">
-    {% if form.errors %}
-        <br><br> Błędy:
-        {% for field in form %}
-            {% if field.errors %}
-                <ul>
-                    {% for error in field.errors %}
-                        <li>{{ field.label }}: {{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-</form> <br>
-<a href="{% url 'account_view' %}"> Powrót </a>
+        <input type="submit" value="Zapisz" class="btn btn-secondary custom-from-button">
+
+        {% if form.errors %}
+            <br><br> Błędy:
+            {% for field in form %}
+                {% if field.errors %}
+                    <ul>
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </form> <br>
+    <a href="{% url 'account_view' %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+{% endblock %}

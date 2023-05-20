@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}"> Powrót </a>
 {% if tags|length == 0 %}
     Ten obiekt nie ma żadnych tagów. <a href="{% url 'tag_list' project_pk=project.id %}"> Przejdź do tagów </a> <br>
@@ -9,3 +13,5 @@
         <input type="submit" value="Zapisz">
     </form>
 {% endif %}
+
+{% endblock %}

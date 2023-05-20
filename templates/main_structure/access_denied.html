@@ -1,3 +1,12 @@
-Nie masz dostępu do tego zasobu! <br>
-
-<a href="{% url 'main' %}"> Strona główna </a>
+<!DOCTYPE html>
+    <html lang="pl">
+        {% extends 'base.html' %}
+        <body>
+            {% block content %}
+                <div class="container text-center big-div">
+                        <h3> Wygląda na to, że nie jesteś właścicielem tego zasobu. </h3> <br>
+                        <a type="button" class="btn btn-secondary custom-button" href="{% url 'main' %}"> Strona główna  </a>
+                </div>
+            {% endblock %}
+        </body>
+    </html>

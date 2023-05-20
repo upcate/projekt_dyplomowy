@@ -21,3 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('aplikacja_dyplomowa.urls')),
 ]
+
+handler404 = 'aplikacja_dyplomowa.views.handle_not_found'

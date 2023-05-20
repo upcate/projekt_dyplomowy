@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+<body>
+{% block content %}
+    <div class="container text-center big-div">
+        <h3> Ups. Zasób, do którego chcesz się dostać, nie istnieje. </h3> <br>
+        <a type="button" class="btn btn-secondary custom-button" href="{% url 'main' %}"> Strona główna  </a>
+    </div>
+{% endblock %}
+</body>

@@ -1,7 +1,20 @@
 <!DOCTYPE html>
 
-<html lang="pl">
-
-    {% extends 'base.html' %}
-
-</html>
+    <html lang="pl">
+        {% extends 'base.html' %}
+        <body>
+            {% block content %}
+                <div class="container text-center big-div">
+                        <h3> Ułatw swój proces twórczy, trzymając swoją pracę i notatki w jednym miejscu. Twórz obiekty, które reprezentują elementy twojego świata przedstawionego i łącz je ze sobą! </h3> <br>
+                        <h3>
+                            Na co czekasz?
+                            {% if user.is_authenticated %}
+                                <a type="button" class="btn btn-secondary custom-button" href="{% url 'project_list' %}"> Przejdź do swoich projektów!  </a>
+                            {% else %}
+                                <a type="button" class="btn btn-secondary custom-button" href="{% url 'register' %}"> Zacznij tworzyć!  </a>
+                            {% endif %}
+                        </h3>
+                </div>
+            {% endblock %}
+        </body>
+    </html>

@@ -1,9 +1,13 @@
-Informacje: <br>
-Nazwa użytkownika: {{ user.username }} <br>
-Email: {{ user.email }} <br> <br>
+{% extends 'base.html' %}
 
-<a href="{% url 'account_update' %}"> Zmiana danych </a>
-<a href="{% url 'account_update_password' %}"> Zmiana hasła </a> <br> <br>
+{% block content %}
+    <div class="display-info big-div container text-center">
+        Informacje o użytkowniku: <br>
+        <a style="font-weight: bold"> Nazwa użytkownika: </a> {{ user.username }} <br>
+        <a style="font-weight: bold"> Email: </a> {{ user.email }} <br> <br>
 
-<a href="{% url 'main' %}"> Powrót </a>
+        <a href="{% url 'account_update' %}" class="btn btn-secondary custom-from-button"> Zmień dane </a>
+        <a href="{% url 'account_update_password' %}" class="btn btn-secondary custom-from-button"> Zmień hasło </a> <br> <br>
+    </div>
+{% endblock %}
 

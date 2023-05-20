@@ -1,0 +1,56 @@
+:root {
+    --black: #0a0908ff;
+    --gunmetal: #22333bff;
+    --almond: #eae0d5ff;
+    --khaki: #c6ac8fff;
+    --walnut-brown: #5e503fff;
+}
+
+body {
+    background-color: var(--almond);
+    margin-bottom: 15%;
+}
+
+.navbar-text .navbar-brand {
+    color: var(--almond);
+}
+
+body::after {
+    content: '';
+    display: block;
+    height: 15%;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+}
+
+.big-div {
+    margin-top: 15%;
+    width: auto;
+}
+
+.custom-button {
+    background-color: var(--walnut-brown);
+    color: var(--almond);
+    font-size: 21pt;
+}
+
+.custom-from-button {
+    background-color: var(--walnut-brown);
+    color: var(--almond);
+
+}
+
+.display-info {
+    font-size: 18px;
+}
+
+.custom-list-button {
+    background-color: var(--khaki);
+    color: var(--almond);
+
+}

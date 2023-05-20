@@ -1,21 +1,89 @@
+{% load static %}
 <!DOCTYPE html>
 
     <html lang="pl">
         <head>
             <title> Aplikacja wspomagająca pisanie fabuł </title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+            <link rel="stylesheet" href="{% static 'base.css' %}">
         </head>
 
         <body>
-            <a> Witaj w aplikacji </a> <br>
-            {% if not user.is_authenticated %}
-            <a href="{% url 'login' %}"> Zaloguj się! </a> <br>
-            <a href="{% url 'register' %}"> Zarejestruj się! </a> <br>
-            {% elif user.is_authenticated %}
-            <a> Zalogowano jako {{ user.username }} </a> <br>
-            <a href="{% url 'project_list' %}"> Projekty użytkownika </a> <br>
-            <a href="{% url 'account_view' %}"> Profil </a>
-            <a href="{% url 'logout' %}"> Wyloguj się </a>
-            {% endif %}
-        </body>
+            {% block navbar %}
+                <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--gunmetal)">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" style="color: var(--almond)"> Aplikacja wspomagająca pisanie fabuł </a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style="color: var(--almond)">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        {% if user.is_authenticated %}
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" style="color: var(--almond)" href="{% url 'main' %}"> Strona główna </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" style="color: var(--almond)" href="{% url 'project_list' %}"> Projekty </a>
+                                    </li>
+                                    {% if project %}
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--almond)"> {{ project }} </a>
+                                            <ul class="dropdown-menu" style="background-color: var(--gunmetal)">
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url 'view_project' project_pk=project.id %}" style="color: var(--almond)"> Wyświetl projekt </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url 'main_file_list' project_pk=project.id %}" style="color: var(--almond)"> Fabuła </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url 'project_file_list' project_pk=project.id %}" style="color: var(--almond)"> Pliki </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url 'object_list' project_pk=project.id %}" style="color: var(--almond)"> Obiekty </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url 'tag_list' project_pk=project.id %}" style="color: var(--almond)"> Tagi </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                    <li class="nav-item">
+                                        <a class="nav-link active" style="color: var(--almond)"> Zalogowano jako {{ user.username }} </a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link active" style="color: var(--almond)" href="{% url 'account_view' %}"> Profil </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" style="color: var(--almond)" href="{% url 'logout' %}"> Wyloguj się </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <div class="collapse navbar-collapse align-right" id="navbarSupportedContent">
+                                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" style="color: var(--almond)" href="{% url 'main' %}"> Strona główna </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" style="color: var(--almond)" href="{% url 'register' %}"> Zarejestruj się </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" style="color: var(--almond)" href="{% url 'login' %}"> Zaloguj się </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </nav>
+            {% endblock %}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
+        {% block content %}{% endblock %}
+        </body>
+        <footer class="mt-5" style="background-color: var(--gunmetal)">
+            <div class="container text-light text-center">
+                <small style="color: var(--almond)"> Aplikacja autorstwa Miłosza Świątka </small> <br>
+                <small style="color: var(--almond)"> Stworzona na potrzeby pracy dyplomowej na kierunku Elektroniczne Przetwarzanie Informacji, 2023 </small>
+            </div>
+        </footer>
     </html>
