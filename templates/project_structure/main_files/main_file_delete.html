@@ -1,6 +1,14 @@
-Czy chcesz usunąć {{ main_file }}? <br>
-<form method="POST" action="" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="submit" value="Usuń">
-    <a href="{% url 'main_file_view' project_pk=project.id main_file_pk=main_file.id %}"> Powrót </a>
-</form>
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="register-form container">
+        <form method="POST" action="" enctype="multipart/form-data" class="px-md-2">
+            {% csrf_token %}
+            <h3> Czy chcesz usunąć {{ main_file }}? </h3>
+            <div class="delete-button">
+                <input type="submit" value="Usuń" class="btn btn-danger custom-from-button">
+                <a href="{% url 'main_file_view' project_pk=project.id main_file_pk=main_file.id %}" class="btn btn-secondary custom-from-button"> Anuluj </a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

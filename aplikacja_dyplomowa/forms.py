@@ -125,7 +125,7 @@ class ProjectObjectForm(ModelForm):
             'tags': 'Tagi'
         }
         widgets = {
-            'object_description': forms.Textarea(attrs={'rows': 3, 'cols': 20}),
+            'object_description': forms.Textarea(attrs={'rows': 5, 'cols': 60}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -139,6 +139,7 @@ class ProjectObjectAddTagForm(Form):
         super().__init__(*args, **kwargs)
         self.fields['tags'].queryset = Tags.objects.filter(project=project)
         self.fields['tags'].initial = object_to_view.tags.all()
+        self.fields['tags'].label = 'Tagi'
 
     tags = forms.ModelMultipleChoiceField(queryset=Tags.objects.none(), widget=forms.CheckboxSelectMultiple, required=False)
 
@@ -149,6 +150,7 @@ class ProjectObjectAddConnectionForm(Form):
         super().__init__(*args, **kwargs)
         self.fields['connections'].queryset = ProjectObjects.objects.filter(project=project).exclude(id=object_to_view.id)
         self.fields['connections'].initial = object_to_view.connections.all()
+        self.fields['connections'].label = 'Połączenia'
 
     connections = forms.ModelMultipleChoiceField(queryset=ProjectObjects.objects.none(), widget=forms.CheckboxSelectMultiple, required=False)
 

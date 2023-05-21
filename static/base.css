@@ -111,3 +111,13 @@ footer {
     padding: 1vmin;
     border-radius: 10px;
 }
+
+.delete-button {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.checkbox-font {
+    font-size: 1.2rem;
+}

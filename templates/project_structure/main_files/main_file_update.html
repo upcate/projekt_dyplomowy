@@ -1,16 +1,31 @@
-<form method="POST" action="">
-    {% csrf_token %}
-    {{ form.file_name.label }}
-    {{ form.file_name }} <br>
+{% extends 'base.html' %}
 
-    <input type="submit" value="Zapisz">
-    {% if form.non_field_errors %}
-        <br><br> Błędy:
-        <ul>
-            {% for error in form.non_field_errors %}
-                <li> {{ error }} </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-</form>
-<a href="{% url 'main_file_view' project_pk=project.id main_file_pk=main_file.id %}"> Powrót </a>
+{% block content %}
+    <div class="register-form container">
+        <form method="POST" action="" class="px-md-2">
+            {% csrf_token %}
+            <h3> Edytuj plik </h3>
+            <div class="form-group row">
+                <label for="{{ form.file_name.id_for_label }}"> {{ form.file_name.label }} </label>
+                <div>
+                    {{ form.file_name }}
+                </div>
+            </div>
+
+            <div class="log-submit">
+                <input type="submit" value="Zapisz" class="btn btn-secondary custom-from-button">
+            </div>
+            {% if form.non_field_errors %}
+                Błędy:
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li> {{ error }} </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </form>
+        <div class="login-link">
+            <a href="{% url 'main_file_view' project_pk=project.id main_file_pk=main_file.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+        </div>
+    </div>
+{% endblock %}

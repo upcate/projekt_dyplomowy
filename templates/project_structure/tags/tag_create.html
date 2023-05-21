@@ -1,16 +1,30 @@
-<form method="POST" action="">
-    {% csrf_token %}
-    {{ form.tag_name.label }}
-    {{ form.tag_name }} <br>
-    <input type="submit" value="Stwórz tag">
-    {% if form.non_field_errors %}
-        <br><br> Błędy:
-        <ul>
-            {% for error in form.non_field_errors %}
-                <li> {{ error }} </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-</form>
-<br>
-<a href="{% url 'tag_list' project_pk=project.id %}"> Powrót </a> <br><br>
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container register-form">
+        <form method="POST" action="" class="px-md-2">
+            {% csrf_token %}
+            <h3> Stwórz tag </h3>
+            <div class="form-group row">
+                <label for="{{ form.tag_name.id_for_label }}"> {{ form.tag_name.label }} </label>
+                <div>
+                    {{ form.tag_name }}
+                </div>
+            </div>
+            <div class="log-submit">
+                <input type="submit" value="Stwórz tag" class="btn btn-secondary custom-from-button">
+            </div>
+            {% if form.non_field_errors %}
+                <br><br> Błędy:
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li> {{ error }} </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </form>
+        <div class="login-link">
+            <a href="{% url 'tag_list' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Powrót </a> <br><br>
+        </div>
+    </div>
+{% endblock %}

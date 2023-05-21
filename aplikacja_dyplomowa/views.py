@@ -588,15 +588,10 @@ def objects_by_tag(request, project_pk, tag_pk):
 
     objects = ProjectObjects.objects.filter(tags__id=tag.id)
 
-    paginator = Paginator(objects, 5)
-    page_number = request.GET.get('page')
-    page_objects = paginator.get_page(page_number)
-
     context = {
         'project': project,
         'tag': tag,
         'objects': objects,
-        'page_objects': page_objects
     }
     return render(request, 'project_structure/object/objects_by_tag.html', context)
 
@@ -612,14 +607,9 @@ def project_file_list(request, project_pk):
 
     files = Files.objects.filter(project=project)
 
-    paginator = Paginator(files, 5)
-    page_number = request.GET.get('page')
-    page_files = paginator.get_page(page_number)
-
     context = {
         'project': project,
         'files': files,
-        'page_files': page_files,
     }
     return render(request, 'project_structure/files/file_list.html', context)
 
@@ -775,14 +765,9 @@ def main_file_list(request, project_pk):
 
     main_files = MainFiles.objects.filter(project=project)
 
-    paginator = Paginator(main_files, 5)
-    page_number = request.GET.get('page')
-    page_main_files = paginator.get_page(page_number)
-
     context = {
         'project': project,
         'main_files': main_files,
-        'page_main_files': page_main_files,
     }
     return render(request, 'project_structure/main_files/main_file_list.html', context)
 
@@ -825,6 +810,7 @@ def main_file_upload(request, project_pk):
 
 @login_required(login_url='login')
 def main_file_update(request, project_pk, main_file_pk):
+
     try:
         project = Projects.objects.get(id=project_pk)
         if project.user != request.user:
@@ -833,7 +819,7 @@ def main_file_update(request, project_pk, main_file_pk):
         return redirect('project_list')
 
     try:
-        main_file = Files.objects.get(id=main_file_pk)
+        main_file = MainFiles.objects.get(id=main_file_pk)
         if main_file.user != request.user:
             return redirect('access_denied')
     except MainFiles.DoesNotExist:

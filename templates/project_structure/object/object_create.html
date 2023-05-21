@@ -1,22 +1,38 @@
-<form method="POST" action="">
-    {% csrf_token %}
-    {{ form.object_name.label }}
-    {{ form.object_name }} <br>
+{% extends 'base.html' %}
 
-    {{ form.object_description.label }}
-    {{ form.object_description }} <br>
+{% block content %}
+    <div class="register-form container">
+        <form method="POST" action="" class="px-md-2">
+            {% csrf_token %}
+            <h3> Stwórz obiekt </h3>
+            <div class="form-group row">
+                <label for="{{ form.object_name.id_for_label }}"> {{ form.object_name.label }} </label>
+                <div>
+                    {{ form.object_name }}
+                </div>
+            </div>
 
-    {{ form.tags.label }}
-    {{ form.tags }} <br>
+            <div class="form-group row">
+                <label for="{{ form.object_description.id_for_label }}"> {{ form.object_description.label }} </label>
+                <div>
+                    {{ form.object_description }}
+                </div>
+            </div>
 
-    <input type="submit" value="Stwórz obiekt">
-    {% if form.non_field_errors %}
-        <br><br> Błędy:
-        <ul>
-            {% for error in form.non_field_errors %}
-                <li> {{ error }} </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-</form>
-<a href="{% url 'object_list' project_pk=project.id %}"> Powrót </a>
+            <div class="log-submit">
+                <input type="submit" value="Stwórz obiekt" class="btn btn-secondary custom-from-button">
+            </div>
+            {% if form.non_field_errors %}
+                Błędy:
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li> {{ error }} </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </form>
+        <div class="login-link">
+            <a href="{% url 'object_list' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+        </div>
+    </div>
+{% endblock %}

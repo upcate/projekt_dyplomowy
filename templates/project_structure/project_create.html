@@ -1,16 +1,30 @@
-<form method="POST" action="">
-    {% csrf_token %}
-    {{ form.project_name.label }}
-    {{ form.project_name }} <br>
-    <input type="submit" value="Stwóz projekt">
-    {% if form.non_field_errors %}
-        <br><br> Błędy:
-        <ul>
-            {% for error in form.non_field_errors %}
-                <li> {{ error }} </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-</form>
+{% extends 'base.html' %}
 
-<a href="{% url 'project_list' %}"> Powrót </a>
+{% block content %}
+    <div class="container register-form">
+        <form method="POST" action="" class="px-md-2">
+            {% csrf_token %}
+            <h3> Stwórz projekt </h3>
+            <div class="form-group row">
+                <label for="{{ form.project_name.id_for_label }}"> {{ form.project_name.label }} </label>
+                <div>
+                {{ form.project_name }}
+                </div>
+            </div>
+            <div class="log-submit">
+                <input type="submit" value="Stwóz projekt" class="btn btn-secondary custom-from-button">
+            </div>
+            {% if form.non_field_errors %}
+                Błędy:
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li> {{ error }} </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </form>
+        <div class="login-link">
+            <a href="{% url 'project_list' %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+        </div>
+    </div>
+{% endblock %}

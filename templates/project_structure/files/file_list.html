@@ -1,32 +1,22 @@
-{% if files|length == 0 %}
-    Ten projekt nie ma jeszcze żadnych plików. <a href="{% url 'project_file_upload' project_pk=project.id %}"> Prześlij plik </a> <br>
-    <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a>
-{% else %}
-    Pliki projektu {{ project }} <br>
-    <a href="{% url 'project_file_upload' project_pk=project.id %}"> Prześlij plik </a> <br>
-    <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a> <br>
-    <table>
-        <tr>
-                <th> Plik </th>
-        <tr>
-            {% for file in page_files %}
-                <tr>
-                    <td> <a href="{% url 'project_file_view' project_pk=project.id file_pk=file.id %}"> {{ file }} </a> </td>
-                </tr>
-            {% endfor %}
-    </table>
+{% extends 'base.html' %}
 
-    {% if page_files.has_other_pages %}
-        {% if page_files.has_previous %}
-            <a href="?page=1"> &lsaquo; Początek </a>
-            <a href="?page={{ page_files.previous_page_number }}"> &lsaquo; Poprzednia </a>
-        {% endif %}
-
-        Strona {{ page_files.number }} z {{ page_files.paginator.num_pages }}
-
-        {% if page_files.has_next %}
-            <a href="?page={{ page_files.next_page_number }}"> &rsaquo; Następna </a>
-            <a href="?page={{ page_files.paginator.num_pages }}"> &rsaquo; Ostatnia </a>
-        {% endif %}
+{% block content %}
+    {% if files|length == 0 %}
+        Ten projekt nie ma jeszcze żadnych plików. <a href="{% url 'project_file_upload' project_pk=project.id %}"> Prześlij plik </a> <br>
+        <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a>
+    {% else %}
+        Pliki projektu {{ project }} <br>
+        <a href="{% url 'project_file_upload' project_pk=project.id %}"> Prześlij plik </a> <br>
+        <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a> <br>
+        <table>
+            <tr>
+                    <th> Plik </th>
+            <tr>
+                {% for file in files %}
+                    <tr>
+                        <td> <a href="{% url 'project_file_view' project_pk=project.id file_pk=file.id %}"> {{ file }} </a> </td>
+                    </tr>
+                {% endfor %}
+        </table>
     {% endif %}
-{% endif %}
+{% endblock %}

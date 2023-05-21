@@ -1,4 +1,8 @@
-Tagi do projektu {{ project }} <br>
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h3> Tagi projektu </h3>
 
 {% if tags|length == 0 %}
     Ten projekt nie ma jeszcze żadnych tagów. <br>
@@ -11,5 +15,5 @@ Tagi do projektu {{ project }} <br>
         <a href="{% url 'tag_delete' project_pk=project.id tag_pk=tag.id %}"> Usuń </a> <br>
     {% endfor %}
     <a href="{% url 'tag_create' project_pk=project.id %}"> Stwórz tag </a> <br>
-    <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a>
 {% endif %}
+{% endblock %}

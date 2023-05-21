@@ -1,17 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}"> Powrót </a>
-{% if tags|length == 0 %}
-    Ten obiekt nie ma żadnych tagów. <a href="{% url 'tag_list' project_pk=project.id %}"> Przejdź do tagów </a> <br>
-{% else %}
-    <form method="POST" action="">
-        {% csrf_token %}
-        {{ form.tags.label }}
-        {{ form.tags }} <br>
-        <input type="submit" value="Zapisz">
-    </form>
-{% endif %}
+    {% if tags|length == 0 %}
+        <div class="display-info big-div container text-center">
+            <h3> Ten obiekt nie ma żadnych tagów. </h3> <br>
+            <a href="{% url 'tag_list' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Przejdź do tagów </a>
+            <a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+        </div>
+    {% else %}
+        <div class="register-form">
+            <form method="POST" action="" class="px-md-2">
+                {% csrf_token %}
+                <h3> Tagi </h3>
+                <div class="form-group checkbox-font">
+                    {{ form.tags }} <br>
+                </div>
+                <input type="submit" value="Zapisz" class="btn btn-secondary custom-from-button">
+                <a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+            </form>
+        </div>
+    {% endif %}
 
 {% endblock %}

@@ -1,21 +1,37 @@
-<form method="POST" action="">
-    {% csrf_token %}
-    {{ form.object_name.label }}
-    {{ form.object_name }} <br>
+{% extends 'base.html' %}
 
-    {{ form.object_description.label }}
-    {{ form.object_description }} <br>
+{% block content %}
+    <div class="register-form container">
+        <form method="POST" action="" class="px-md-2">
+            {% csrf_token %}
+            <h3> Edytuj obiekt </h3>
+            <div class="form-group row">
+                <label for="{{ form.object_name.id_for_label }}"> {{ form.object_name.label }} </label>
+                <div>
+                    {{ form.object_name }}
+                </div>
+            </div>
 
-    <input type="submit" value="Zapisz"> <br>
-</form>
-
-{% if form.non_field_errors %}
-    <br><br> Błędy:
-    <ul>
-        {% for error in form.non_field_errors %}
-            <li> {{ error }} </li>
-        {% endfor %}
-    </ul>
-{% endif %} <br>
-
-<a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}"> Powrót </a>
+            <div class="form-group row">
+                <label for="{{ form.object_name.id_for_label }}"> {{ form.object_description.label }} </label>
+                <div>
+                    {{ form.object_description }}
+                </div>
+            </div>
+            <div class="log-submit">
+                <input type="submit" value="Zapisz" class="btn btn-secondary custom-from-button">
+            </div>
+            {% if form.non_field_errors %}
+            Błędy:
+            <ul>
+                {% for error in form.non_field_errors %}
+                    <li> {{ error }} </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        </form>
+        <div class="login-link">
+            <a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+        </div>
+    </div>
+{% endblock %}

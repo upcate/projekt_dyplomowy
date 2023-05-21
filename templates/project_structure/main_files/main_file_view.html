@@ -1,9 +1,14 @@
-Nazwa pliku: {{ main_file.file_name }} <br>
-Plik: {{ main_file.filename }} <br>
-Rozmiar pliku: {{ main_file_size }}kB <br>
+{% extends 'base.html' %}
 
-<a href="{% url 'main_file_update' project_pk=project.id main_file_pk=main_file.id %}"> Edytuj </a>
-<a href="{% url 'main_file_delete' project_pk=project.id main_file_pk=main_file.id %}"> Usuń </a>
-<a href="{% url 'main_file_download' project_pk=project.id main_file_pk=main_file.id %}"> Pobierz </a> <br>
+{% block content %}
+    <div class="display-info big-div container text-center">
+        <h3 style="font-weight: bold"> {{ main_file.file_name }} </h3> <br>
+        <a style="font-weight: bold"> Plik: </a> {{ main_file.filename }} <br>
+        <a style="font-weight: bold"> Rozmiar pliku: </a> {{ main_file_size }}kB <br>
 
-<a href="{% url 'main_file_list' project_pk=project.id %}"> Powrót </a>
+        <a href="{% url 'main_file_update' project_pk=project.id main_file_pk=main_file.id %}" class="btn btn-secondary custom-from-button"> Edytuj </a>
+        <a href="{% url 'main_file_delete' project_pk=project.id main_file_pk=main_file.id %}" class="btn btn-secondary custom-from-button"> Usuń </a>
+        <a href="{% url 'main_file_download' project_pk=project.id main_file_pk=main_file.id %}" class="btn btn-secondary custom-from-button"> Pobierz </a>
+    <a href="{% url 'main_file_list' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+    </div>
+{% endblock %}

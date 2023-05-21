@@ -1,11 +1,23 @@
-<a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}"> Powrót </a> <br>
-{% if objects|length == 1 %}
-    W projekcie jest tylko ten projekt. <a href="{% url 'object_create' project_pk=project.id %}"> Przejdź do tworzenia obiektów. </a>
-{% else %}
-    <form method="POST" action="">
-        {% csrf_token %}
-        {{ form.connections.label }} <br>
-        {{ form.connections }} <br>
-        <input type="submit" value="Zapisz">
-    </form>
-{% endif %}
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if objects|length == 1 %}
+        <div class="display-info big-div text-center container">
+            <h3> W projekcie jest tylko ten obiekt. </h3>
+            <a href="{% url 'object_create' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Przejdź do tworzenia obiektów. </a>
+            <a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+        </div>
+    {% else %}
+        <div class="register-form">
+            <form method="POST" action="" class="px-md-2">
+                {% csrf_token %}
+                <h3> Połączenia </h3>
+                <div class="form-group checkbox-font">
+                    {{ form.connections }}
+                </div>
+                <input type="submit" value="Zapisz" class="btn btn-secondary custom-from-button">
+                <a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}

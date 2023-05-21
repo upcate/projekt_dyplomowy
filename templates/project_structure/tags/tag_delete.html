@@ -1,7 +1,14 @@
-<form method="POST" action="">
-    {% csrf_token %}
-    Czy usuńąć tag {{ tag.tag_name }}? <br>
-    <input type="submit" value="Usuń">
-    <a href="{% url 'tag_list' project_pk=project.id %}"> Anuluj </a>
+{% extends 'base.html' %}
 
-</form>
+{% block content %}
+    <div class="container register-form">
+        <form method="POST" action="" class="px-md-2">
+            {% csrf_token %}
+            <h3> Czy usuńąć tag {{ tag.tag_name }}? </h3>
+            <div class="delete-button">
+                <input type="submit" value="Usuń" class="btn btn-danger custom-from-button">
+                <a href="{% url 'tag_list' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Anuluj </a>
+            </div>
+        </form>
+    </div>
+{% endblock %}
