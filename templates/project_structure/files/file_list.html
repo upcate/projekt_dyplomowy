@@ -2,21 +2,25 @@
 
 {% block content %}
     {% if files|length == 0 %}
-        Ten projekt nie ma jeszcze żadnych plików. <a href="{% url 'project_file_upload' project_pk=project.id %}"> Prześlij plik </a> <br>
-        <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a>
+        <div class="container display-info text-center big-div">
+            <h3> Ten projekt nie ma jeszcze żadnych plików. </h3>
+            <a href="{% url 'project_file_upload' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Prześlij plik </a>
+            <a href="{% url 'view_project' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+        </div>
     {% else %}
-        Pliki projektu {{ project }} <br>
-        <a href="{% url 'project_file_upload' project_pk=project.id %}"> Prześlij plik </a> <br>
-        <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a> <br>
-        <table>
-            <tr>
-                    <th> Plik </th>
-            <tr>
+        <div class="list-center text-center">
+            <table>
+                <th> <h3> Pliki projektu </h3> </th>
                 {% for file in files %}
-                    <tr>
-                        <td> <a href="{% url 'project_file_view' project_pk=project.id file_pk=file.id %}"> {{ file }} </a> </td>
+                    <tr class="custom-list-button tr-border">
+                        <td> <a class="btn custom-list-button" href="{% url 'project_file_view' project_pk=project.id file_pk=file.id %}"> {{ file }} </a> </td>
                     </tr>
                 {% endfor %}
-        </table>
+            </table>
+            <div>
+                <a href="{% url 'project_file_upload' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Prześlij plik </a>
+                <a href="{% url 'view_project' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+            </div>
+        </div>
     {% endif %}
 {% endblock %}

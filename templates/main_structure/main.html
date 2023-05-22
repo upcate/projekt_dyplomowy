@@ -5,14 +5,21 @@
         <body>
             {% block content %}
                 <div class="container text-center big-div main-desc">
-                        <h3> Ułatw swój proces twórczy, trzymając swoją pracę i notatki w jednym miejscu. Twórz obiekty, które reprezentują elementy twojego świata przedstawionego i łącz je ze sobą! </h3> <br>
-                        <h4>
-                            {% if user.is_authenticated %}
-                                <a type="button" class="btn btn-secondary custom-button" href="{% url 'project_list' %}"> Przejdź do swoich projektów!  </a>
-                            {% else %}
-                                <a type="button" class="btn btn-secondary custom-button" href="{% url 'register' %}"> Zacznij tworzyć!  </a>
-                            {% endif %}
-                        </h4>
+                        <div class="main-text col-md-5">
+                            <h1>Aplikacja Wspomagająca Tworzenie Fabuły</h1>
+                            <p> Ułatw swój proces twórczy, trzymając swoją pracę i notatki w jednym miejscu. Twórz obiekty, które reprezentują elementy twojego świata przedstawionego i łącz je ze sobą! </p>
+                         </div>   <br>
+
+                        <div class="main-image col-md-7">
+                        <img src="/static/images/man_read.png"></img>
+                            <h4>
+                                {% if user.is_authenticated %}
+                                    <a type="button" class="btn btn-secondary custom-button" href="{% url 'project_list' %}"> Przejdź do swoich projektów!  </a>
+                                {% else %}
+                                    <a type="button" class="btn btn-secondary custom-button" href="{% url 'register' %}"> Zacznij tworzyć!  </a>
+                                {% endif %}
+                            </h4>
+                        </div>
                 </div>
             {% endblock %}
         </body>

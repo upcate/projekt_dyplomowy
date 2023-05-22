@@ -2,21 +2,25 @@
 
 {% block content %}
     {% if main_files|length == 0 %}
-        Ten projekt nie ma jeszcze plików związanych z fabułą. <a href="{% url 'main_file_upload' project_pk=project.id %}"> Prześlij plik </a> <br>
-        <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a>
+        <div class="container display-info text-center big-div">
+            <h3> Ten projekt nie ma jeszcze plików z fabułą. </h3>
+            <a href="{% url 'main_file_upload' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Prześlij plik </a>
+            <a href="{% url 'view_project' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+        </div>
     {% else %}
-        Pliki z fabułą projektu {{ project }} <br>
-        <a href="{% url 'main_file_upload' project_pk=project.id %}"> Prześlij plik </a> <br>
-        <a href="{% url 'view_project' project_pk=project.id %}"> Powrót </a> <br>
-        <table>
-            <tr>
-                    <th> Plik </th>
-            <tr>
+        <div class="list-center text-center">
+            <table>
+                <th> <h3> Pliki z fabułą </h3> </th>
                 {% for main_file in main_files %}
-                    <tr>
-                        <td> <a href="{% url 'main_file_view' project_pk=project.id main_file_pk=main_file.id %}"> {{ main_file }} </a> </td>
+                    <tr class="tr-border custom-list-button">
+                        <td> <a class="btn custom-list-button" href="{% url 'main_file_view' project_pk=project.id main_file_pk=main_file.id %}"> {{ main_file }} </a> </td>
                     </tr>
                 {% endfor %}
-        </table>
+            </table>
+            <div>
+                <a href="{% url 'main_file_upload' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Prześlij plik </a>
+                <a href="{% url 'view_project' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+            </div>
+        </div>
     {% endif %}
 {% endblock %}

@@ -7,7 +7,7 @@
             <h3> Czy usuńąć obiekt {{ object.object_name }}? </h3>
             <div class="delete-button">
                 <input type="submit" value="Usuń" class="btn btn-danger custom-from-button">
-                <a href="{% url 'object_list' project_pk=project.id %}" class="btn btn-secondary custom-from-button"> Anuluj </a>
+                <a href="{% url 'object_view' project_pk=project.id object_pk=object.id %}" class="btn btn-secondary custom-from-button"> Anuluj </a>
             </div>
         </form>
     </div>

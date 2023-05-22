@@ -3,37 +3,29 @@
         {% extends 'base.html' %}
         {% block content %}
             <body>
-                <div class="display-info">
                     {% if projects|length == 0 %}
                         <div class="big-div container text-center">
                             Nie masz jeszcze żadnych projektów. <br>
                             <a href="{% url 'create_project' %}" class="btn btn-secondary custom-from-button"> Stwórz swój pierwszy projekt! </a> <br>
                         </div>
                     {% else %}
-                        <div class="big-div container text-center">
-                            <table class="table">
-                                <thead>
+                        <div class="list-center text-center">
+                            <table>
                                     <tr>
-                                        <th scope="col"> Projekty użytkownika </th>
+                                        <th> <h3> Projekty użytkownika </h3> </th>
                                     </tr>
-                                </thead>
-                                <tbody>
                                     {% for project in projects %}
-                                        <tr>
+                                        <tr class="custom-list-button tr-border">
                                             <td> <a href="{% url 'view_project' project_pk=project.id %}" class="btn custom-list-button"> {{ project }} </a> </td>
                                         </tr>
                                     {% endfor %}
-                                </tbody>
                             </table>
-                            <a href="{% url 'create_project' %}" class="btn btn-secondary custom-from-button"> Stwórz projekt </a>
-{#                            Projekty użytkownika: <br>#}
-{#                            {% for project in projects %}#}
-{#                                <a href="{% url 'view_project' project_pk=project.id %}"> {{ project }} </a> <br>#}
-{#                            {% endfor %}#}
-{#                        <a href="{% url 'create_project' %}" class="btn btn-secondary custom-from-button"> Stwórz projekt </a> <br>#}
+                            <div>
+                                <a href="{% url 'create_project' %}" class="btn btn-secondary custom-from-button"> Stwórz projekt </a>
+                                <a href="{% url 'main' %}" class="btn btn-secondary custom-from-button"> Powrót </a>
+                            </div>
                         </div>
                     {% endif %}
-                </div>
             </body>
         {% endblock %}
 
