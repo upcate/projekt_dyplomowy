@@ -1,12 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<body>
-    Project {{ project }} <br>
-    <a href="{% url 'update_project' project_pk=project.id %}"> Edytuj projekt. </a> <a href="{% url 'delete_project' project_pk=project.id %}"> Usuń projekt. </a> <br>
-    <a href="{% url 'main_file_list' project_pk=project.id %}"> Fabuła </a> <br>
-    <a href="{% url 'project_file_list' project_pk=project.id %}"> Pliki </a> <br>
-    <a href="{% url 'object_list' project_pk=project.id %}"> Obiekty </a> <br>
-    <a href="{% url 'tag_list' project_pk=project.id %}"> Tagi </a> <br>
-</body>
+    <body>
+        <div class="container display-info text-center display-info-project-view">
+            <h3> {{ project }} </h3>
+            <a class="btn btn-secondary custom-from-button" href="{% url 'update_project' project_pk=project.id %}"> Edytuj projekt. </a>
+            <a class="btn btn-secondary custom-from-button" href="{% url 'delete_project' project_pk=project.id %}"> Usuń projekt. </a>
+        </div>
+            <div class="project-view-grid">
+                <div class="grid-item text-center">
+                    <a class="btn" href="{% url 'main_file_list' project_pk=project.id %}"> Fabuła </a>
+                </div>
+                <div class="grid-item text-center">
+                    <a class="btn" href="{% url 'project_file_list' project_pk=project.id %}"> Pliki </a>
+                </div>
+                <div class="grid-item text-center">
+                    <a class="btn" href="{% url 'object_list' project_pk=project.id %}"> Obiekty </a>
+                </div>
+                <div class="grid-item text-center">
+                    <a class="btn" href="{% url 'tag_list' project_pk=project.id %}"> Tagi </a>
+                </div>
+            </div>
+    </body>
 {% endblock %}

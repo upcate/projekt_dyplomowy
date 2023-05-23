@@ -5,7 +5,7 @@
             <body>
                     {% if projects|length == 0 %}
                         <div class="big-div container text-center">
-                            Nie masz jeszcze żadnych projektów. <br>
+                            <h3> Nie masz jeszcze żadnych projektów. </h3>
                             <a href="{% url 'create_project' %}" class="btn btn-secondary custom-from-button"> Stwórz swój pierwszy projekt! </a> <br>
                         </div>
                     {% else %}
