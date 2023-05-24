@@ -23,8 +23,15 @@ class CreateUserForm(UserCreationForm):
         help_text='Enter the same password as before, for verification.',
     )
 
+    username = forms.CharField(
+        label='Nazwa użytkownika',
+        error_messages={
+            'invalid': 'Nazwa użytkownika nie powinna zawierać znaków specjalnych ani spacji.',
+        }
+    )
+
     error_messages = {
-        'password_mismatch': 'Hasła się nie zgadzają.'
+        'password_mismatch': 'Hasła się nie zgadzają.',
     }
 
     class Meta:

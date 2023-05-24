@@ -23,14 +23,14 @@
                 <div class="log-submit">
                 <input type="submit" value="Zaloguj się" class="btn btn-secondary custom-from-button">
                 </div>
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
             </form>
             <div class="login-link">
                 Nie masz konta? <a href="{% url 'register' %}" class="btn btn-secondary custom-from-button"> Zarejestruj się! </a>
             </div>
             </div>
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %} <br>
 
         {% endblock %}
 
